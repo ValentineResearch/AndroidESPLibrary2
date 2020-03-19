@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:gravity="right"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/scan_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/ic_bluetooth_white"
+            android:onClick="scan" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <Button
+        android:id="@+id/conn_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:onClick="connect"
+        android:text="Connect"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/notSupportTV" />
+
+    <Button
+        android:id="@+id/disconn_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:onClick="disconnect"
+        android:text="Disconnect"
+        app:layout_constraintStart_toEndOf="@+id/conn_btn"
+        app:layout_constraintTop_toTopOf="@+id/conn_btn" />
+
+    <Spinner
+        android:id="@+id/device_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:entries="@array/devices"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/disconn_btn"
+        app:layout_constraintTop_toTopOf="@+id/disconn_btn" />
+
+    <Button
+        android:id="@+id/version_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:onClick="version"
+        android:text="Version"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/conn_btn" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/log"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/x" />
+
+    <Button
+        android:id="@+id/startAT_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:onClick="startAT"
+        android:text="Start AT"
+        app:layout_constraintStart_toEndOf="@+id/version_btn"
+        app:layout_constraintTop_toTopOf="@+id/version_btn" />
+
+    <Button
+        android:id="@+id/stopAT_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:onClick="stopAT"
+        android:text="Stop AT"
+        app:layout_constraintStart_toEndOf="@+id/startAT_btn"
+        app:layout_constraintTop_toTopOf="@+id/startAT_btn" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="clear"
+        android:text="Clear"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/sweeps_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="Read Custom Sweeps"
+        android:onClick="requestSweeps"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/version_btn" />
+
+    <TextView
+        android:id="@+id/laser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Laser"
+        android:textColor="#9B9B9B"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <TextView
+        android:id="@+id/ka"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Ka"
+        android:textColor="#9B9B9B"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@+id/laser"
+        app:layout_constraintTop_toBottomOf="@+id/laser" />
+
+    <TextView
+        android:id="@+id/k"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="K"
+        android:textColor="#9B9B9B"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@+id/ka"
+        app:layout_constraintTop_toBottomOf="@+id/ka" />
+
+    <TextView
+        android:id="@+id/x"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="X"
+        android:textColor="#9B9B9B"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@+id/k"
+        app:layout_constraintTop_toBottomOf="@+id/k" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Display Data:"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sweeps_btn" />
+
+    <TextView
+        android:id="@+id/front"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="Front"
+        android:textColor="#9B9B9B"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@+id/laser"
+        app:layout_constraintTop_toTopOf="@+id/laser" />
+
+    <TextView
+        android:id="@+id/side"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Side"
+        android:textColor="#9B9B9B"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@+id/front"
+        app:layout_constraintTop_toBottomOf="@+id/front" />
+
+    <TextView
+        android:id="@+id/rear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Rear"
+        android:textColor="#9B9B9B"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@+id/side"
+        app:layout_constraintTop_toBottomOf="@+id/side" />
+
+    <TextView
+        android:id="@+id/bluetooth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="Bluetooth"
+        android:textColor="#9B9B9B"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@+id/front"
+        app:layout_constraintTop_toTopOf="@+id/front" />
+
+    <TextView
+        android:id="@+id/mute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Mute"
+        android:textColor="#9B9B9B"
+        app:layout_constraintStart_toStartOf="@+id/bluetooth"
+        app:layout_constraintTop_toBottomOf="@+id/bluetooth" />
+
+    <TextView
+        android:id="@+id/notSupportTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="BLUETOOTH NOT SUPPORTED!!!"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

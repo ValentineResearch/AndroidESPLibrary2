@@ -1,0 +1,3 @@
+include ':app',':ESPLibrary'
+rootProject.name='HelloV1'
+project(':ESPLibrary').projectDir = new File(settingsDir, '../ESPLibrary2.0/ESPLib')

@@ -1,0 +1,53 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileOptions.encoding = 'UTF-8'
+    compileSdkVersion 29
+    buildToolsVersion '28.0.3'
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "2.0.0"
+
+        buildConfigField("boolean", "ENABLE_LOGGING", "false")
+        buildConfigField("boolean", "INFO_LOGGING", "false")
+        buildConfigField("boolean", "DEBUG_LOGGING", "false")
+        buildConfigField("boolean", "VERBOSE_LOGGING", "false")
+        buildConfigField("boolean", "WARN_LOGGING", "false")
+        buildConfigField("boolean", "ERROR_LOGGING", "false")
+
+        buildConfigField "boolean", "USE_EXPERIEMENTAL_FEATURES", "false"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            buildConfigField("boolean", "ENABLE_LOGGING", "true")
+            buildConfigField("boolean", "INFO_LOGGING", "true")
+            buildConfigField("boolean", "DEBUG_LOGGING", "true")
+            buildConfigField("boolean", "VERBOSE_LOGGING", "true")
+            buildConfigField("boolean", "WARN_LOGGING", "true")
+            buildConfigField("boolean", "ERROR_LOGGING", "true")
+        }
+        experimental {
+            buildConfigField "boolean", "USE_EXPERIEMENTAL_FEATURES", "false"
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    api 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    testImplementation 'junit:junit:4.13'
+}

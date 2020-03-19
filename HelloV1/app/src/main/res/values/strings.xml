@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">HelloV1</string>
+    <string name="disc_devices_label">Discovered Devices:</string>
+    <string-array name="devices">
+        <item>V1</item>
+        <item>V1connection</item>
+        <item>CD</item>
+        <item>SAVVY</item>
+    </string-array>
+</resources>
