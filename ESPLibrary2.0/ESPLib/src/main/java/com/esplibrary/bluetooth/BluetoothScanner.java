@@ -125,6 +125,9 @@ public class BluetoothScanner extends BroadcastReceiver implements IScanner {
         }
         else {
             BluetoothLeScanner scanner = mBTAdptr.getBluetoothLeScanner();
+            if (scanner == null) {
+                return false;
+            }
             Builder scanSettingsBuilder = new Builder();
             // If we are running on the apis that supports MatchMode use MATCH_MODE_AGGRESSIVE.
             if (VERSION_CODES.M <= VERSION.SDK_INT) {
@@ -181,7 +184,9 @@ public class BluetoothScanner extends BroadcastReceiver implements IScanner {
         else if(mScanType == ConnectionType.LE) {
             if (mLEScanCB != null) {
                 BluetoothLeScanner scanner = mBTAdptr.getBluetoothLeScanner();
-                scanner.stopScan(mLEScanCB);
+                if (scanner != null) {
+                    scanner.stopScan(mLEScanCB);
+                }
             }
         }
     }

@@ -33,6 +33,8 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
     protected BluetoothGattCharacteristic mClientOut;
     private Handler mHandler;
     private boolean mNotifyOnDisconnection = false;
+    private int mRSSI = -127;
+    private RSSICallback mPendingRSSICB;
 
     protected final AtomicBoolean mCanWrite = new AtomicBoolean(false);
 
@@ -59,6 +61,13 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
     }
 
     @Override
+    public int getCachedRSSI() {
+        synchronized (this) {
+            return mRSSI;
+        }
+    }
+
+    @Override
     public void connect(Context ctx, BluetoothDevice v1Device) {
         super.connect(ctx, v1Device);
         // Always reset the notify on disconnection
@@ -69,13 +78,12 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
         }
         // Set the state to connecting.
         if(mState.compareAndSet(STATE_DISCONNECTED, STATE_CONNECTING)) {
-            getHandler().obtainMessage(WHAT_CONNECTION_EVENT, ConnectionEvent.Connecting.ordinal(), 0).sendToTarget();
+            getHandler().obtainMessage(WHAT_CONNECTION_EVENT, ConnectionEvent.Connecting.ordinal(),
+                    0).sendToTarget();
             // We need to keep a reference to mGatt right here so we can abort the connection
             // attempt if need be...
-            synchronized (this) {
-                ESPLogger.d(LOG_TAG, "gatt connect called!");
-                mGatt = connectGatt(ctx, v1Device, mGattCallback);
-            }
+            setGATT(connectGatt(ctx, v1Device, mGattCallback));
+            ESPLogger.d(LOG_TAG, "gatt connect called!");
         }
         else{
             // We were in the disconnected state while attempting to connect so force it to
@@ -129,6 +137,7 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
                     mGatt.disconnect();
                     mGatt.close();
                 }
+                mGatt = null;
             }
             // Since the onConnectionStateChange won't be called, we must manually call
             // onDisconnected.
@@ -137,14 +146,24 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
         else {
             // The disconnect is asynchronous, so store the notify disconnect flag.
             mNotifyOnDisconnection = notifyDisconnect;
-            // Call disconnect on the gatt object and
+            // Call disconnect on the gatt object
             synchronized (this) {
                 if(mGatt != null) {
                     mGatt.disconnect();
                 }
             }
         }
+        cancelServiceDiscoveryTimeout();
         super.disconnect(notifyDisconnect);
+    }
+
+    @Override
+    protected void onDisconnected() {
+        super.onDisconnected();
+        synchronized (this) {
+            mRSSI = -127;
+            mPendingRSSICB = null;
+        }
     }
 
     /**
@@ -180,20 +199,27 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
     @Override
     protected boolean write(byte[] data) {
         BluetoothGatt gatt;
+        BluetoothGattCharacteristic charac;
         synchronized (this) {
             gatt = mGatt;
+            charac = mClientOut;
         }
-        if(gatt == null) {
+        if(gatt == null || charac == null) {
+            ESPLogger.d(LOG_TAG, String.format("write(byte[]) -> gatt == null : %b, charac == null : %b",
+                    (gatt == null),
+                    (charac == null)));
             return false;
         }
-        if(data == null) {
+        else if(data == null) {
+            ESPLogger.d(LOG_TAG, "write(byte[]) -> byte array == null");
             return false;
         }
         setCanPerformBTWrite(false);
-        mClientOut.setValue(data);
-        return gatt.writeCharacteristic(mClientOut);
+        charac.setValue(data);
+        return gatt.writeCharacteristic(charac);
     }
 
+    //region GattCallback impl
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
         // We wanna log the onConnectionStateChange call.
@@ -216,15 +242,12 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
                     else {
                         ESPLogger.d(LOG_TAG, String.format("V1connection LE Service none-null after connecting to %s", BTUtil.getFriendlyName(gatt.getDevice())));
                     }
-
+                    // Discovery the available services.
+                    gatt.discoverServices();
                     // We are in the correct state, we now wanna discover the devices services.
                     ESPLogger.d(LOG_TAG, "Discovering BluetoothGatt services...");
-                    gatt.discoverServices();
-
-                    mHandler.postDelayed(() -> {
-                        ESPLogger.d(LOG_TAG, "Failed to discover device services, disconnecting.");
-                        gatt.disconnect();
-                    }, 8000);
+                    // We need to set a serv. discovery timeout because randomly the API will never invoke onServiceDiscovery(...) preventing the app to complete the BT connection
+                    startServiceDiscoveryTimeout(gatt,8000);
                     return;
                 }
                 ESPLogger.w(LOG_TAG, "Incorrect state: we weren't anticipating a connection, disconnecting.");
@@ -234,10 +257,7 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
                 if(mState.get() == STATE_DISCONNECTING) {
                     ESPLogger.d(LOG_TAG, "Successfully disconnected.");
                     gatt.close();
-                    synchronized (this) {
-                        mGatt = null;
-                    }
-
+                    setGATT(null);
                     onDisconnected(mNotifyOnDisconnection);
                     return;
                 }
@@ -248,9 +268,7 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
         // Remember to call close(...) instead of disconnect() here. This is necessary because
         // calling  disconnect(...) will trigger a temporary disconnection but a few seconds later a
         // new connection is created. To prevent this we wanna close the BluetoothGatt object.
-        synchronized (this) {
-            mGatt = null;
-        }
+        setGATT(null);
         gatt.close();
 
         // If we made it to this point, and we're connecting, that means we've failed to establish
@@ -268,10 +286,36 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
         mNotifyOnDisconnection = true;
     }
 
+    protected void setGATT(BluetoothGatt gatt) {
+        synchronized (this) {
+            mGatt = gatt;
+        }
+    }
+
+    /**
+     * Starts a service discovery timeout using the specified timeout.
+     *
+     * @param gatt
+     * @param timeout
+     */
+    protected void startServiceDiscoveryTimeout(BluetoothGatt gatt, long timeout) {
+        mHandler.postDelayed(() -> {
+            ESPLogger.d(LOG_TAG, "Failed to discover device services, disconnecting.");
+            gatt.disconnect();
+        }, timeout);
+    }
+
+    /**
+     * Cancel the service discovery timeout
+     */
+    protected void cancelServiceDiscoveryTimeout() {
+        mHandler.removeCallbacksAndMessages(null);
+    }
+
     @Override
     public void onServicesDiscovered(BluetoothGatt gatt, int status) {
         // Clear the service discovery timeout.
-        mHandler.removeCallbacksAndMessages(null);
+        cancelServiceDiscoveryTimeout();
         ESPLogger.d(LOG_TAG, new StringBuilder("onServicesDiscovered(")
                 .append(BTUtil.gattOperationToString(status))
                 .append(")")
@@ -280,12 +324,7 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
         if(status == BluetoothGatt.GATT_SUCCESS) {
             // Make sure we were in the correct state when services were discovered.
             if(mState.get() == STATE_CONNECTING) {
-                ESPLogger.d(LOG_TAG, "Services discovered, enabling notifications for characteristic");
-                BluetoothGattService service = gatt.getService(BTUtil.V1CONNECTION_LE_SERVICE_UUID);
-                mClientOut = service.getCharacteristic(BTUtil.CLIENT_OUT_V1_IN_SHORT_CHARACTERISTIC_UUID);
-                BluetoothGattCharacteristic v1OutClient = service.getCharacteristic(BTUtil.V1_OUT_CLIENT_IN_SHORT_CHARACTERISTIC_UUID);
-                enableCharacteristicNotifications(gatt, v1OutClient, true);
-                return;
+                discoveryESPGATTCharacteristics(gatt);
             }
         }
         else {
@@ -295,6 +334,14 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
                 gatt.disconnect();
             }
         }
+    }
+
+    protected void discoveryESPGATTCharacteristics(BluetoothGatt gatt) {
+        BluetoothGattService service = gatt.getService(BTUtil.V1CONNECTION_LE_SERVICE_UUID);
+        mClientOut = service.getCharacteristic(BTUtil.CLIENT_OUT_V1_IN_SHORT_CHARACTERISTIC_UUID);
+        BluetoothGattCharacteristic v1OutClientIn = service.getCharacteristic(BTUtil.V1_OUT_CLIENT_IN_SHORT_CHARACTERISTIC_UUID);
+        ESPLogger.d(LOG_TAG, "Enabling notifications for V1-Out/Client-In short BluetoothGattCharacteristic...");
+        enableCharacteristicNotifications(gatt, v1OutClientIn, true);
     }
 
     @Override
@@ -374,4 +421,36 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
             ESPLogger.d(LOG_TAG, "Unsupported characteristic. UUID: " + characteristic.getUuid().toString());
         }
     }
+
+    @Override
+    public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+        if(status == BluetoothGatt.GATT_SUCCESS) {
+            final BluetoothDevice device = gatt.getDevice();
+            final RSSICallback cb;
+            synchronized (this) {
+                mRSSI = rssi;
+                cb = mPendingRSSICB;
+                mPendingRSSICB = null;
+            }
+            if (cb != null) {
+                mHandler.post(() -> cb.onRssiReceived(device, rssi));
+            }
+        }
+        else {
+            ESPLogger.e(LOG_TAG, "Unable to read the remote device's RSSI");
+        }
+    }
+
+    @Override
+    public boolean readRemoteRSSI(RSSICallback callback) {
+        if(isConnected()) {
+            synchronized (this) {
+                mPendingRSSICB = callback;
+            }
+            return mGatt.readRemoteRssi();
+        }
+        ESPLogger.d(LOG_TAG, "Not connected - unable to read remote RSSI!");
+        return false;
+    }
+    //endregion
 }

@@ -329,6 +329,17 @@ public abstract class V1connectionBaseWrapper implements IV1connectionWrapper, H
     }
 
     @Override
+    public int getCachedRSSI() {
+        return -127;
+    }
+
+    @Override
+    public boolean readRemoteRSSI(RSSICallback callback) {
+        // By default reading RSSI isn't supported so return false
+        return false;
+    }
+
+    @Override
     public boolean isConnected() {
         return mState.get() == STATE_CONNECTED;
     }
@@ -979,7 +990,7 @@ public abstract class V1connectionBaseWrapper implements IV1connectionWrapper, H
             return;
         }
 
-        ESPLogger.i(LOG_TAG, String.format("Adding %s, packet destined to %s to echo queue", PacketId.getNameForPacketIdentifier(packet.getPacketID()), packet.getDestination().toString()));
+        ESPLogger.i(LOG_TAG, String.format("Adding %s (%d), packet destined to %s to echo queue", PacketId.getNameForPacketIdentifier(packet.getPacketID()), packet.getPacketID(), packet.getDestination().toString()));
 
         synchronized (mEchoQueue) {
             // Add the ESPPacket into the echo packet list.
@@ -1009,8 +1020,8 @@ public abstract class V1connectionBaseWrapper implements IV1connectionWrapper, H
                         packet.setTransmissionTime(System.currentTimeMillis());
                         continue;
                     }
-                    ESPLogger.e(LOG_TAG, String.format("Purging expired %s packet destined to %s",
-                            PacketId.getNameForPacketIdentifier(packet.getPacketID()),
+                    ESPLogger.e(LOG_TAG, String.format("Purging expired %s packet (%d) destined to %s",
+                            PacketId.getNameForPacketIdentifier(packet.getPacketID()), packet.getPacketID(),
                             packet.getDestination().toString()));
                     mEchoQueue.remove(i);
                 }

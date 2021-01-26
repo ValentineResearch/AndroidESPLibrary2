@@ -16,8 +16,14 @@ import com.esplibrary.packets.response.ResponseDefaultSweepDefinition;
  * Created by JDavis on 3/14/2016.
  */
 public final class V1VersionInfo {
-    // Use version V4.1007 as the default version for this app.
+    /**
+     * Baseline version of the V1 Gen2 platform
+     */
     public final static double V1_GEN_2_PLATFORM_BASELINE_VERSION = 4.1000d;
+    /**
+     * Max version of the V1 Gen2 platform
+     */
+    public final static double V1_GEN_2_PLATFORM_MAX_VERSION = 4.9999d;
     // V1 version that first had support for K band support
     private final static double K_BAND_SWEEP_SUPPORT = V1_GEN_2_PLATFORM_BASELINE_VERSION;
     // The ability to read the default sweeps form the V1 was added in version V3.8950.
@@ -105,11 +111,11 @@ public final class V1VersionInfo {
      *
      * @return List of default {@link Range sweeps} best matching the specified version
      */
-    public static List<Range> getDefaultCustomSweepsForV1Version(double version, boolean euroMode) {
+    public static List<Range> getDefaultCustomSweepsForV1Version(double version) {
         List<Range> sweeps = new ArrayList<>();
         Range [] cs;
         if(version >= V1_GEN_2_PLATFORM_BASELINE_VERSION) {
-            cs = euroMode ? V1FrequencyInfo.V4_1000_CUSTOM_FREQUENCIES_EURO : V1FrequencyInfo.V4_1000_CUSTOM_FREQUENCIES_USA;
+            cs = V1FrequencyInfo.V4_1000_CUSTOM_FREQUENCIES;
         }
         else if(version >= SINGLE_SWEEP_SECTION_VERSION) {
             cs = V1FrequencyInfo.V3_8952_CUSTOM_SWEEPS;

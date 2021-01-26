@@ -50,7 +50,6 @@ public class ResponseProcessor {
      */
     public void addResponse(ResponseHandler respHandler) {
         // Add an null response respHandler is incorrect and should be ignored
-        // TODO considered returning a boolean from this method.
         if (respHandler == null) {
             return;
         }

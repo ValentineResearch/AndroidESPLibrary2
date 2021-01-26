@@ -3,11 +3,13 @@ package com.esplibrary.client;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.esplibrary.bluetooth.BTUtil;
 import com.esplibrary.bluetooth.ConnectionListener;
 import com.esplibrary.bluetooth.ConnectionType;
+import com.esplibrary.bluetooth.RSSICallback;
 import com.esplibrary.bluetooth.V1connectionDemoWrapper;
 import com.esplibrary.bluetooth.V1connectionLEWrapper;
 import com.esplibrary.bluetooth.V1connectionWrapper;
@@ -289,6 +291,27 @@ public interface IESPClient {
      * @return Connected device.
      */
     BluetoothDevice getConnectedDevice();
+
+    /**
+     * Returns the last cached RSSI value for the currently connected BLE device.
+     *
+     * @return RSSI of the currently connected device.
+     * @apiNote This value is only meaningful for BLE connections such as with
+     * V1connection LE/V1c LE/V1 Gen2.
+     */
+    int getConnectedDeviceRSSI();
+
+    /**
+     * Asynchronously reads the connected remote BLE devices RSSI and invokes callback once the
+     * value has been read.
+     * @param callback the callback that will be invoked with the read back RSSI value.
+     *                 <br><br><b>Note: Regardless of the calling thread callback will always be
+     *                 invoked on main (UI) thread.</b>
+     *
+     * @return True if an Asynchronously read has taken place. If false is returned, check the
+     * error log (Logcat Lvl. "Error") output for a hint as to why the call failed.
+     */
+    boolean readConnectedDeviceRSSI(@NonNull RSSICallback callback);
     //endregion
 
     //region V1 Info methods

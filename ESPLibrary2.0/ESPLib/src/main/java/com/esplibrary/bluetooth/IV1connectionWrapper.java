@@ -1,6 +1,7 @@
 package com.esplibrary.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCallback;
 import android.content.Context;
 
 import com.esplibrary.client.ESPClientListener;
@@ -52,9 +53,28 @@ public interface IV1connectionWrapper {
     BluetoothDevice getDevice();
 
     /**
+     * Returns the last read RSSI for the connected remote BLE device. If no connection a value of
+     * '-127' will always be returned.
+     * 
+     * @return The last read RSSI value.
+     * @see #readRemoteRSSI(RSSICallback)
+     */
+    int getCachedRSSI();
+
+    /**
+     * Asynchronously reads the connected remote BLE devices RSSI and invokes callback once the
+     * value has been read.
+     * @param callback the callback that will be invoked with the read back RSSI value.
      *
-     * @param ctx
-     * @param device
+     * @return True if an Asynchronously read has taken place. If false is returned, check the log
+     * output for a hint as to why the call failed.
+     */
+    boolean readRemoteRSSI(RSSICallback callback);
+
+    /**
+     * Asynchronosly attempts to establish a connection with device.
+     *
+     * @param device the target Bluetooth device to connect.
      */
     void connect(Context ctx, BluetoothDevice device);
 

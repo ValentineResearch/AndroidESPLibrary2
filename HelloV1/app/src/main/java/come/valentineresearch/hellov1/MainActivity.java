@@ -54,6 +54,7 @@ public class MainActivity extends ESPActivity implements V1ScannerDialog.V1Selec
     private TextView mRear;
     private TextView mBt;
     private TextView mMute;
+    private TextView mActive;
 
     private Button mScan;
     private Button mConnect;
@@ -62,6 +63,7 @@ public class MainActivity extends ESPActivity implements V1ScannerDialog.V1Selec
     private Button mStartAT;
     private Button mStopAT;
     private Button mReadSweeps;
+    private Button mReadRSSI;
 
     private BasicAdapter mAdapter;
     private boolean mSupportsBT;
@@ -88,6 +90,7 @@ public class MainActivity extends ESPActivity implements V1ScannerDialog.V1Selec
         mRear = findViewById(R.id.rear);
         mBt = findViewById(R.id.bluetooth);
         mMute = findViewById(R.id.mute);
+        mActive = findViewById(R.id.active);
 
         mConnect = findViewById(R.id.conn_btn);
         mDisconnect = findViewById(R.id.disconn_btn);
@@ -95,6 +98,7 @@ public class MainActivity extends ESPActivity implements V1ScannerDialog.V1Selec
         mStartAT = findViewById(R.id.startAT_btn);
         mStopAT = findViewById(R.id.stopAT_btn);
         mReadSweeps = findViewById(R.id.sweeps_btn);
+        mReadRSSI = findViewById(R.id.rssi_btn);
     }
 
     @Override
@@ -140,6 +144,7 @@ public class MainActivity extends ESPActivity implements V1ScannerDialog.V1Selec
         mStartAT.setEnabled(false);
         mStopAT.setEnabled(false);
         mReadSweeps.setEnabled(false);
+        mReadRSSI.setEnabled(false);
     }
 
     @Override
@@ -233,6 +238,7 @@ public class MainActivity extends ESPActivity implements V1ScannerDialog.V1Selec
         mStartAT.setEnabled(enable);
         mStopAT.setEnabled(enable);
         mReadSweeps.setEnabled(enable);
+        mReadRSSI.setEnabled(enable);
     }
 
     /**
@@ -248,6 +254,7 @@ public class MainActivity extends ESPActivity implements V1ScannerDialog.V1Selec
         mRear.setTextColor(Color.GRAY);
         mBt.setTextColor(Color.GRAY);
         mMute.setTextColor(Color.GRAY);
+        mActive.setTextColor(Color.GRAY);
     }
 
     @Override
@@ -275,6 +282,10 @@ public class MainActivity extends ESPActivity implements V1ScannerDialog.V1Selec
 
         if (displayData.isRearImage1()) {
             mRear.setTextColor(Color.RED);
+        }
+
+        if(displayData.hasActiveAlerts()) {
+            mActive.setTextColor(Color.GREEN);
         }
 
         // The values returned from this method are only valid on V1 versions V4.1018 and above
@@ -454,6 +465,16 @@ public class MainActivity extends ESPActivity implements V1ScannerDialog.V1Selec
             }
             addLog(builder.toString());
         }));
+    }
+
+    /**
+     * Button onclick handler
+     * @param view clicked button
+     */
+    public void readRssi(View view) {
+        mV1Mngr.readRemoteRssi((device, rssi) -> {
+            addLog(String.format("Device: %s (%s) -\t\t rssi: %d", device.getName(), device.getAddress(), rssi));
+        });
     }
 
     /**

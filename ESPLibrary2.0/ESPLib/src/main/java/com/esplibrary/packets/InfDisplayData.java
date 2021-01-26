@@ -194,7 +194,7 @@ public class InfDisplayData extends ESPPacket {
 
     /**
      * Checks if the Laser bit is set in the Band and Arrow Indicator Image 1.
-     * Note: DOESN'T CEHCK IF SYSTEM STATUS BIT IS SET. BEWARE!!!!
+     * Note: DOESN'T CHECK IF SYSTEM STATUS BIT IS SET. BEWARE!!!!
      *
      * @return  Returns true if the laser bit is set otherwise, returns false.
      */
@@ -205,10 +205,13 @@ public class InfDisplayData extends ESPPacket {
     /**
      * Indicates if there are any alerts present on the V1's display.
      *
-     * @return  Returns true if there are any alerts present on the V1's display otherwise, returns false.
+     * @return  Returns true if there are any alerts present on the V1's display otherwise, returns
+     * false.
+     * @see #hasActiveAlerts()
      */
+    @Deprecated
     public boolean isAlertPresent() {
-        return (isLaserImage1() || isKaImage1() || isKImage1() || isDpImage1() || isXImage1());
+        return hasActiveAlerts();
     }
 
     /**
@@ -423,11 +426,12 @@ public class InfDisplayData extends ESPPacket {
      * @return  Returns true if there are any active alerts, otherwise false is returned.
      */
     public boolean hasActiveAlerts() {
-        // If any of the three arrows are lit, this usually means that their is an active alert present.
+        // If any of the three arrows are lit, this usually means that there is an active alert
+        // present.
         return (isSystemStatus() &&
-                isFrontImage1() &&
-                isSideImage1() &&
-                isRearImage1());
+                (isFrontImage1() ||
+                        isSideImage1() ||
+                        isRearImage1()));
     }
 
     /**

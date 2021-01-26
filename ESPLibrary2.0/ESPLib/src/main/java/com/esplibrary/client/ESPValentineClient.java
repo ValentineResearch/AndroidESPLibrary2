@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.esplibrary.bluetooth.BTUtil;
 import com.esplibrary.bluetooth.ConnectionListener;
 import com.esplibrary.bluetooth.ConnectionType;
 import com.esplibrary.bluetooth.IV1connectionWrapper;
+import com.esplibrary.bluetooth.RSSICallback;
 import com.esplibrary.client.callbacks.ESPRequestListener;
 import com.esplibrary.client.callbacks.ESPRequestedDataListener;
 import com.esplibrary.client.callbacks.MalformedDataListener;
@@ -277,6 +279,16 @@ public class ESPValentineClient implements IESPClient {
     @Override
     public BluetoothDevice getConnectedDevice() {
         return mConnection.getDevice();
+    }
+
+    @Override
+    public int getConnectedDeviceRSSI() {
+        return mConnection.getCachedRSSI();
+    }
+
+    @Override
+    public boolean readConnectedDeviceRSSI(@NonNull RSSICallback callback) {
+        return mConnection.readRemoteRSSI(callback);
     }
 
     //endregion

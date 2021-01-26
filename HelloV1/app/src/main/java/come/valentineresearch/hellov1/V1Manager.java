@@ -10,6 +10,7 @@ import com.esplibrary.bluetooth.BTUtil;
 import com.esplibrary.bluetooth.ConnectionEvent;
 import com.esplibrary.bluetooth.ConnectionListener;
 import com.esplibrary.bluetooth.ConnectionType;
+import com.esplibrary.bluetooth.RSSICallback;
 import com.esplibrary.client.ESPClientListener;
 import com.esplibrary.client.IESPClient;
 import com.esplibrary.client.callbacks.ESPRequestListener;
@@ -180,6 +181,17 @@ public class V1Manager implements ESPClientListener, ConnectionListener {
     public void requestSweeps(ESPRequestedDataListener<List<SweepDefinition>> callback) {
         if (mClient != null) {
             mClient.requestAllSweepDefinitions(callback);
+        }
+    }
+
+    /**
+     * Initiates an asynchronous RSSI read from the connected remote BLE device.
+     *
+     * @param callback Callback that will be invoked once the RSSI has been read.
+     */
+    public void readRemoteRssi(RSSICallback callback) {
+        if(mClient != null) {
+            mClient.readConnectedDeviceRSSI(callback);
         }
     }
 

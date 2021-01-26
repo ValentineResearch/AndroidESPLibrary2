@@ -186,26 +186,13 @@ public class V1FrequencyInfo {
     };
 
     /**
-     * Array of default Custom USA mode {@link Range sweeps} for the Valentine One running firmware version
+     * Array of default Custom {@link Range sweeps/frequencies} for the Valentine One running firmware version
      * V4.000 and above
      */
-    public static final Range[] V4_1000_CUSTOM_FREQUENCIES_USA = {
+    public static final Range[] V4_1000_CUSTOM_FREQUENCIES = {
             new Range(V4_1000_DEF_USA_SWEEP_0_LOWER_EDGE, V4_1000_DEF_USA_SWEEP_0_UPPER_EDGE),
             new Range(V4_1000_DEF_USA_SWEEP_1_LOWER_EDGE, V4_1000_DEF_USA_SWEEP_1_UPPER_EDGE)
     };
-
-    /**
-     * Array of default Custom Euro mode {@link Range sweeps} for the Valentine One running firmware version
-     * V4.000 and above
-     */
-    public static final Range[] V4_1000_CUSTOM_FREQUENCIES_EURO = {
-            new Range(V4_1000_EURO_SWEEP_0_LOWER_EDGE, V4_1000_EURO_SWEEP_0_UPPER_EDGE),
-            new Range(V4_1000_EURO_SWEEP_1_LOWER_EDGE, V4_1000_EURO_SWEEP_1_UPPER_EDGE),
-            new Range(V4_1000_EURO_SWEEP_2_LOWER_EDGE, V4_1000_EURO_SWEEP_2_UPPER_EDGE),
-            new Range(V4_1000_EURO_SWEEP_3_LOWER_EDGE, V4_1000_EURO_SWEEP_3_UPPER_EDGE),
-            new Range(V4_1000_EURO_SWEEP_4_LOWER_EDGE, V4_1000_EURO_SWEEP_4_UPPER_EDGE)
-    };
-
     /**
      * Array of default Custom {@link Range sweeps} for the Valentine One running firmware version
      * V3.8952 and above

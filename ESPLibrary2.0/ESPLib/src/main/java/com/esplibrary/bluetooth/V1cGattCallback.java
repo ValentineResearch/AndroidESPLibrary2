@@ -26,18 +26,25 @@ public class V1cGattCallback extends BluetoothGattCallback {
     }
 
     @Override
-    public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+    public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor,
+                                  int status) {
         mGattCallback.onDescriptorWrite(gatt, descriptor, status);
     }
 
-
     @Override
-    public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+    public void onCharacteristicWrite(BluetoothGatt gatt,
+                                      BluetoothGattCharacteristic characteristic, int status) {
         mGattCallback.onCharacteristicWrite(gatt, characteristic, status);
     }
 
     @Override
-    public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+    public void onCharacteristicChanged(BluetoothGatt gatt,
+                                        BluetoothGattCharacteristic characteristic) {
         mGattCallback.onCharacteristicChanged(gatt, characteristic);
+    }
+
+    @Override
+    public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+        mGattCallback.onReadRemoteRssi(gatt, rssi, status);
     }
 }

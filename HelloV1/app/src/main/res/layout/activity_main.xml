@@ -240,6 +240,16 @@
         app:layout_constraintTop_toBottomOf="@+id/bluetooth" />
 
     <TextView
+        android:id="@+id/active"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Alerts Active"
+        android:textColor="#9B9B9B"
+        app:layout_constraintStart_toStartOf="@+id/mute"
+        app:layout_constraintTop_toBottomOf="@+id/mute" />
+
+    <TextView
         android:id="@+id/notSupportTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -253,5 +263,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <Button
+        android:id="@+id/rssi_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="RSSI"
+        android:onClick="readRssi"
+        app:layout_constraintStart_toEndOf="@+id/stopAT_btn"
+        app:layout_constraintTop_toTopOf="@+id/stopAT_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

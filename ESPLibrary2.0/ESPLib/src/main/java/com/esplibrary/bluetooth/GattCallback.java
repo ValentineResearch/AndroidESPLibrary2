@@ -10,61 +10,71 @@ import android.bluetooth.BluetoothProfile;
  * class. This interface allows an implementor to inherit basic Bluetooth Gatt callbacks without
  * extending BluetoothGattCallback.
  */
-public interface GattCallback {
+interface GattCallback {
     /**
-     * Callback indicating when GATT client has connected/disconnected to/from a remote
-     * GATT server.
+     * Callback that will get invoked once the connection state with a remote BLE device changes.
      *
-     * @param gatt GATT client
-     * @param status Status of the connect or disconnect operation. {@link
-     * BluetoothGatt#GATT_SUCCESS} if the operation succeeds.
-     * @param newState Returns the new connection state. Can be one of {@link
-     * BluetoothProfile#STATE_DISCONNECTED} or {@link BluetoothProfile#STATE_CONNECTED}
+     * @param gatt Interface for communicating with the connected remote BLE device using Bluetooth
+     *             Gatt functionality.
+     * @param status Status of the connection event.
+     * @param newState New connection state. Possible values are:
+     * {@link BluetoothProfile#STATE_DISCONNECTED},{@link BluetoothProfile#STATE_CONNECTED}
      */
     void onConnectionStateChange(BluetoothGatt gatt, int status, int newState);
 
     /**
-     * Callback invoked when the list of remote services, characteristics and descriptors
-     * for the remote device have been updated, ie new services have been discovered.
+     * Callback that will get invoked once GATT services for the connected remote BLE device have
+     * been discovered.
      *
-     * @param gatt GATT client invoked {@link BluetoothGatt#discoverServices}
-     * @param status {@link BluetoothGatt#GATT_SUCCESS} if the remote device has been explored
-     * successfully.
+     * @param gatt Interface for communicating with the connected remote BLE device using Bluetooth
+     *             Gatt functionality.
+     * @param status Status of the service discovery request.
+     *
+     * @see {@link BluetoothGatt#discoverServices()}
      */
     void onServicesDiscovered(BluetoothGatt gatt, int status);
 
     /**
-     * Callback indicating the result of a descriptor write operation.
+     * Callback that will get invoked after a local write to a remote BLE descriptor has completed.
      *
-     * @param gatt GATT client invoked {@link BluetoothGatt#writeDescriptor}
-     * @param descriptor Descriptor that was writte to the associated remote device.
-     * @param status The result of the write operation {@link BluetoothGatt#GATT_SUCCESS} if the
-     * operation succeeds.
+     * @param gatt Interface for communicating with the connected remote BLE device using Bluetooth
+     *             Gatt functionality.
+     * @param descriptor The remote BLE device descriptor that was written to
+     * @param status Status of the descriptor write.
      */
     void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status);
 
     /**
-     * Callback indicating the result of a characteristic write operation.
+     * Callback that will get invoked whenever a characteristic has been locally written to the
+     * connected remote BLE device.
      *
-     * <p>If this callback is invoked while a reliable write transaction is
-     * in progress, the value of the characteristic represents the value
-     * reported by the remote device. An application should compare this
-     * value to the desired value to be written. If the values don't match,
-     * the application must abort the reliable write transaction.
-     *
-     * @param gatt GATT client invoked {@link BluetoothGatt#writeCharacteristic}
-     * @param characteristic Characteristic that was written to the associated remote device.
-     * @param status The result of the write operation {@link BluetoothGatt#GATT_SUCCESS} if the
-     * operation succeeds.
+     * @param gatt Interface for communicating with the connected remote BLE device using Bluetooth
+     *             Gatt functionality.
+     * @param characteristic The remote BLE device characteristic that was written to
+     * @param status Status of the characteristic write.
      */
-    void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status);
+    void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic,
+                               int status);
 
     /**
-     * Callback triggered as a result of a remote characteristic notification.
+     * Callback that will get invoked whenever the connected remote BLE device writes to a
+     * characteristic whose notifications have be enabled.
      *
-     * @param gatt GATT client the characteristic is associated with
-     * @param characteristic Characteristic that has been updated as a result of a remote
-     * notification event.
+     * @param gatt Interface for communicating with the connected remote BLE device using Bluetooth
+     *             Gatt functionality.
+     * @param characteristic The characteristic the connected remote BLE device has changed.
+     *                       See {@link BluetoothGattCharacteristic#getValue()} for the result of
+     *                       the change.
      */
     void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic);
+
+    /**
+     * Callback triggered as a result of an RSSI read operation.
+     *
+     * @param gatt Interface for communicating with the connected remote BLE device using Bluetooth
+     *             Gatt functionality.
+     * @param rssi The RSSI value for the remote device
+     * @param status {@link BluetoothGatt#GATT_SUCCESS} if the RSSI was read successfully
+     */
+    void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status);
 }
