@@ -707,8 +707,9 @@ public abstract class V1connectionBaseWrapper implements IV1connectionWrapper, H
     }
 
     /**
+     * Perform processing on the provided {@link InfDisplayData}.
      *
-     * @param displayData
+     * @param displayData {@link InfDisplayData} to process.
      */
     protected void processDisplayData(InfDisplayData displayData) {
         final DeviceId deviceType;
@@ -857,8 +858,9 @@ public abstract class V1connectionBaseWrapper implements IV1connectionWrapper, H
     }
 
     /**
+     * Invoked when an ESPPacket has successfully been written.
      *
-     * @param packet
+     * @param packet the written packet
      */
     protected void onPacketWritten(ESPPacket packet) {
         if (mUseEchoQ) {
@@ -874,8 +876,9 @@ public abstract class V1connectionBaseWrapper implements IV1connectionWrapper, H
     }
 
     /**
+     * Invoked when a {@link ESPPacket} failed to send.
      *
-     * @param packet
+     * @param packet the packet that failed to send
      */
     protected void onPacketWriteFailed(ESPPacket packet) {
         ESPLogger.d(LOG_TAG, String.format("Failed to write packet Id: %02X", packet.getPacketID()));
