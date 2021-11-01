@@ -9,6 +9,7 @@ import com.esplibrary.constants.PacketId;
 import com.esplibrary.packets.request.RequestAllSweepDefinitions;
 import com.esplibrary.packets.request.RequestBatteryVoltage;
 import com.esplibrary.packets.request.RequestChangeMode;
+import com.esplibrary.packets.request.RequestCurrentVolume;
 import com.esplibrary.packets.request.RequestDefaultSweepDefinitions;
 import com.esplibrary.packets.request.RequestDefaultSweeps;
 import com.esplibrary.packets.request.RequestFactoryDefault;
@@ -29,8 +30,10 @@ import com.esplibrary.packets.request.RequestVehicleSpeed;
 import com.esplibrary.packets.request.RequestVersion;
 import com.esplibrary.packets.request.RequestWriteSweepDefinition;
 import com.esplibrary.packets.request.RequestWriteUserBytes;
+import com.esplibrary.packets.request.RequestWriteVolume;
 import com.esplibrary.packets.response.ResponseAlertData;
 import com.esplibrary.packets.response.ResponseBatteryVoltage;
+import com.esplibrary.packets.response.ResponseCurrentVolume;
 import com.esplibrary.packets.response.ResponseDataError;
 import com.esplibrary.packets.response.ResponseDataReceived;
 import com.esplibrary.packets.response.ResponseDefaultSweepDefinition;
@@ -109,6 +112,12 @@ public class PacketFactory {
                 return new RequestMuteOff(packetLength);
             case PacketId.REQCHANGEMODE:
                 return new RequestChangeMode(packetLength);
+            case PacketId.REQCURRENTVOLUME:
+                return new RequestCurrentVolume(packetLength);
+            case PacketId.RESPCURRENTVOLUME:
+                return new ResponseCurrentVolume(packetLength);
+            case PacketId.REQWRITEVOLUME:
+                return new RequestWriteVolume(packetLength);
             case PacketId.REQSTARTALERTDATA:
                 return new RequestStartAlertData(packetLength);
             case PacketId.REQSTOPALERTDATA:

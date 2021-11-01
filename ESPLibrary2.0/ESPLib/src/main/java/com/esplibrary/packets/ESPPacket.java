@@ -32,7 +32,7 @@ public abstract class ESPPacket {
     /**
      * Constructs a new instance with the specified V1 type and payload data
      *
-     * @param v1Type V1 tpye
+     * @param v1Type V1 type
      * @param payload packet payload
      */
     public ESPPacket(DeviceId v1Type, byte [] payload) {

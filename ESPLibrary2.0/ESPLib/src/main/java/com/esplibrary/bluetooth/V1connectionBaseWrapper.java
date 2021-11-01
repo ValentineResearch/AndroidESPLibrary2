@@ -1065,7 +1065,13 @@ public abstract class V1connectionBaseWrapper implements IV1connectionWrapper, H
      * @param data  The bad ESP data.
      */
     protected void malformedData(byte[] data) {
-        String badData = BTUtil.toHexString(data);
+        String badData;
+        if(data.length == 0) {
+            badData = "empty packet";
+        }
+        else {
+            badData = BTUtil.toHexString(data);
+        }
         ESPLogger.d(LOG_TAG, badData);
         Message.obtain(mHandler, WHAT_MALFORMED_DATA, String.format("Malformed packet: %s", badData)).sendToTarget();
     }

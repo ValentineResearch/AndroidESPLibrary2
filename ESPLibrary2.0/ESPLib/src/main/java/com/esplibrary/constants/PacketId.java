@@ -41,6 +41,9 @@ public class PacketId {
             REQMUTEON,
             REQMUTEOFF,
             REQCHANGEMODE,
+            REQCURRENTVOLUME,
+            RESPCURRENTVOLUME,
+            REQWRITEVOLUME,
             REQSTARTALERTDATA,
             REQSTOPALERTDATA,
             RESPALERTDATA,
@@ -117,9 +120,15 @@ public class PacketId {
     public static final int REQMUTEOFF 					= 0x35;
     /**Packet Identifier for Change Mode Request**/
     public static final int REQCHANGEMODE 				= 0x36;
+    /**Packet Identifier for the current volume settings request**/
+    public static final int REQCURRENTVOLUME            = 0x37;
+    /**Packet Identifier for the current volume setting response**/
+    public static final int RESPCURRENTVOLUME           = 0x38;
+    /**Packet Identifier for updating the current volumnbe settings request**/
+    public static final int REQWRITEVOLUME              = 0x39;
     /**Packet Identifier for Start Alert Data Request**/
     public static final int REQSTARTALERTDATA 			= 0x41;
-    /**Packet Identifier for* Stop Alert Data Request*/
+    /**Packet Identifier for Stop Alert Data Request*/
     public static final int REQSTOPALERTDATA 			= 0x42;
     /**Packet Identifier for Alert Data Response**/
     public static final int RESPALERTDATA 				= 0x43;
@@ -202,6 +211,9 @@ public class PacketId {
             case REQMUTEON: return "REQMUTEON";
             case REQMUTEOFF: return "REQMUTEOFF";
             case REQCHANGEMODE: return "REQCHANGEMODE";
+            case REQCURRENTVOLUME: return "REQCURRENTVOLUME";
+            case RESPCURRENTVOLUME: return "RESPCURRENTVOLUME";
+            case REQWRITEVOLUME: return "REQWRITEVOLUME";
             case REQSTARTALERTDATA: return "REQSTARTALERTDATA";
             case REQSTOPALERTDATA: return "REQSTOPALERTDATA";
             case RESPALERTDATA: return "RESPALERTDATA";

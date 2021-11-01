@@ -11,3 +11,8 @@
 *The ESP packet ResponseSerialNumber has been refactored.
 *BluetoothScanner was modify to address potential NPEs.
 *The gradle version for HelloV1 has been changed to '4.0.1'
+
+# **ESP Library2 v2.0.2 – October 29, 2021**
+*Added support for remoting adjusting the V1 Gen2's volume settings. **(Only supported on versions V4.1027 and above)**
+*Fixed a race-condition in V1connectionLEWrapper's disconnect(boolean) method that could potentialy result in a connection loss callback instead of a disconnected callback.
+*Fixed a bug that allowed for a NullPointerException to be thrown while attempting to get the BluetoothGattCharacteristics from the V1connection LE BluetoothGattService.

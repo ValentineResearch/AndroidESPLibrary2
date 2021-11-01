@@ -30,6 +30,7 @@ import com.esplibrary.packets.InfDisplayData;
 import com.esplibrary.packets.request.RequestAllSweepDefinitions;
 import com.esplibrary.packets.request.RequestBatteryVoltage;
 import com.esplibrary.packets.request.RequestChangeMode;
+import com.esplibrary.packets.request.RequestCurrentVolume;
 import com.esplibrary.packets.request.RequestDefaultSweepDefinitions;
 import com.esplibrary.packets.request.RequestDefaultSweeps;
 import com.esplibrary.packets.request.RequestFactoryDefault;
@@ -50,8 +51,10 @@ import com.esplibrary.packets.request.RequestVehicleSpeed;
 import com.esplibrary.packets.request.RequestVersion;
 import com.esplibrary.packets.request.RequestWriteSweepDefinition;
 import com.esplibrary.packets.request.RequestWriteUserBytes;
+import com.esplibrary.packets.request.RequestWriteVolume;
 import com.esplibrary.packets.response.ResponseAlertData;
 import com.esplibrary.packets.response.ResponseBatteryVoltage;
+import com.esplibrary.packets.response.ResponseCurrentVolume;
 import com.esplibrary.packets.response.ResponseMaxSweepIndex;
 import com.esplibrary.packets.response.ResponseSAVVYStatus;
 import com.esplibrary.packets.response.ResponseSerialNumber;
@@ -1013,6 +1016,54 @@ public class ESPValentineClient implements IESPClient {
             }
         };
         mConnection.addRequest(new ESPRequest(factoryDefaultRequest, handler));
+    }
+
+    @Override
+    public void requestCurrentVolume(ESPRequestedDataListener<byte[]> callback) {
+        RequestCurrentVolume currentVolRequest = new RequestCurrentVolume(mConnection
+                .getValentineType());
+        ResponseHandler<ResponseCurrentVolume> handler = new ResponseHandler<>();
+        handler.addResponseID(PacketId.RESPCURRENTVOLUME);
+        handler.successCallback = currentVolumeResp -> {
+            if (callback != null) {
+                callback.onDataReceived(currentVolumeResp.getCurrentVolume(), null);
+            }
+            return true;
+        };
+
+        // Add failure callback that will invoked the onRequestCompleted callback indicating the
+        // reason the packet failed.
+        handler.failureCallback = error -> {
+            if (callback != null) {
+                callback.onDataReceived(null, error);
+            }
+        };
+        mConnection.addRequest(new ESPRequest(currentVolRequest, handler));
+    }
+
+    @Override
+    public void requestWriteVolumeSettings(byte mainVolume, byte mutedVolume, byte aux0,
+                                           ESPRequestListener callback) {
+        // Construct a volume control ESP request
+        RequestWriteVolume volumeWriteRequest =
+                new RequestWriteVolume(mConnection.getValentineType(),
+                        mainVolume, mutedVolume, aux0);
+
+        ResponseHandler handler = new ResponseHandler();
+        handler.successCallback  = packet -> {
+            if (callback != null) {
+                callback.onRequestCompleted(null);
+            }
+            return true;
+        };
+        // Add failure callback that will invoked the onRequestCompleted callback indicating the
+        // reason the packet failed.
+        handler.failureCallback = error -> {
+            if (callback != null) {
+                callback.onRequestCompleted(error);
+            }
+        };
+        mConnection.addRequest(new ESPRequest(volumeWriteRequest, handler));
     }
 
     /**

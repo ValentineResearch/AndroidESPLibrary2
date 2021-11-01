@@ -28,6 +28,7 @@ import com.esplibrary.data.UserSettings;
 import com.esplibrary.packets.ESPPacket;
 import com.esplibrary.packets.InfDisplayData;
 import com.esplibrary.packets.PacketFactory;
+import com.esplibrary.packets.response.ResponseCurrentVolume;
 
 import java.util.List;
 
@@ -538,6 +539,24 @@ public interface IESPClient {
      *                 mode has changed or if an error occurs.
      */
     void requestChangeMode(V1Mode mode, ESPRequestListener callback);
+    /**
+     * Request to read the Valentine One's current volume settings.
+     *
+     * @param callback  The {@link ESPRequestListener callback} that will be invoked when the
+     *                  current volume settings are received or if an error occurs.
+     */
+    void requestCurrentVolume(ESPRequestedDataListener<byte[]> callback);
+
+    /**
+     * Request to change the Valentine One's current volume settings.
+     *
+     * @param mainVolume    main volume (valid values are 0-9)
+     * @param mutedVolume   muted volume (valid values are 0-9)
+     * @param aux0          reserved for future use by Valentine Research Inc.
+     * @param callback      The {@link ESPRequestListener callback} that will be invoked when the
+     *                      write Volume packet is sent or if an error occurs.
+     */
+    void requestWriteVolumeSettings(byte mainVolume, byte mutedVolume, byte aux0, ESPRequestListener callback);
     //endregion
 
     //region Alert Output

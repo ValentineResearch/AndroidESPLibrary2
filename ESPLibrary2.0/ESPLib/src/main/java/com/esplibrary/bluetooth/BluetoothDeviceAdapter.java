@@ -39,9 +39,9 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDevice
     }
 
     /**
-     * Sets the adapters datas et.
+     * Sets the content of the adapter.
      *
-     * @param data List of {@link BTAdapterItem}
+     * @param data List of {@link BTAdapterItem items}.
      */
     public void setData(List<BTAdapterItem> data) {
         // Determines the differences between the two list and update the adapter

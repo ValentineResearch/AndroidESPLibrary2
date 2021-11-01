@@ -127,14 +127,23 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
 
     @Override
     public void disconnect(boolean notifyDisconnect) {
+        cancelServiceDiscoveryTimeout();
+        // The super call is intentionally after the if statement below because it will force
+        // the connection state to DISCONNECTED thus we cannot determine if we're in the middle
+        // of connecting
+        // ....
         // If we are in the connecting state transition to the disconnected state and close the
         // BluetoothGatt object... we need to do this because calling disconnect before a connection
         // has been established doesn't guarantee onConnectionStateChange(BluetoothGatt, int int)
         // will be called thus allowing us to traditionally transition into the disconnected state.
         if(mState.get() == STATE_CONNECTING) {
+            super.disconnect(false);
             synchronized (this) {
                 if(mGatt != null) {
                     mGatt.disconnect();
+                    // We must call close on the GATT object because if a new connection is in
+                    // progress, because sometimes after calling disconnect a new connection is
+                    // spontaneously made
                     mGatt.close();
                 }
                 mGatt = null;
@@ -144,6 +153,7 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
             onDisconnected(notifyDisconnect);
         }
         else {
+            super.disconnect(notifyDisconnect);
             // The disconnect is asynchronous, so store the notify disconnect flag.
             mNotifyOnDisconnection = notifyDisconnect;
             // Call disconnect on the gatt object
@@ -153,8 +163,6 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
                 }
             }
         }
-        cancelServiceDiscoveryTimeout();
-        super.disconnect(notifyDisconnect);
     }
 
     @Override
@@ -320,7 +328,8 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
                 .append(BTUtil.gattOperationToString(status))
                 .append(")")
                 .toString());
-        // If the service discovery was successful, enable notifications for the V1-out, client-in characteristic.
+        // If the service discovery was successful, enable notifications for the V1-out, client-in
+        // characteristic.
         if(status == BluetoothGatt.GATT_SUCCESS) {
             // Make sure we were in the correct state when services were discovered.
             if(mState.get() == STATE_CONNECTING) {
@@ -328,7 +337,8 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
             }
         }
         else {
-            // If we failed to discover services while in the connecting state, disconnect because we aren't able to find the V1connectionWrapper LE service.
+            // If we failed to discover services while in the connecting state, disconnect because
+            // we aren't able to find the V1connectionWrapper LE service.
             if (mState.get() == STATE_CONNECTING) {
                 ESPLogger.d(LOG_TAG, "Failed to discover V1connection LE service.");
                 gatt.disconnect();
@@ -338,10 +348,26 @@ public class V1connectionLEWrapper extends V1connectionBaseWrapper implements Ga
 
     protected void discoveryESPGATTCharacteristics(BluetoothGatt gatt) {
         BluetoothGattService service = gatt.getService(BTUtil.V1CONNECTION_LE_SERVICE_UUID);
-        mClientOut = service.getCharacteristic(BTUtil.CLIENT_OUT_V1_IN_SHORT_CHARACTERISTIC_UUID);
+        if(service == null) {
+            ESPLogger.d(LOG_TAG, "Failed to discover V1connection LE service.");
+            gatt.disconnect();
+            return;
+        }
+        BluetoothGattCharacteristic clientOut = service.getCharacteristic(BTUtil.CLIENT_OUT_V1_IN_SHORT_CHARACTERISTIC_UUID);
         BluetoothGattCharacteristic v1OutClientIn = service.getCharacteristic(BTUtil.V1_OUT_CLIENT_IN_SHORT_CHARACTERISTIC_UUID);
-        ESPLogger.d(LOG_TAG, "Enabling notifications for V1-Out/Client-In short BluetoothGattCharacteristic...");
-        enableCharacteristicNotifications(gatt, v1OutClientIn, true);
+        if(clientOut == null || v1OutClientIn == null)
+        {
+            ESPLogger.d(LOG_TAG, "V1/Client In-Out BluetoothGattCharacteristic is null after discovering GATT services.");
+            gatt.disconnect();
+            return;
+        }
+        mClientOut = clientOut;
+        ESPLogger.d(LOG_TAG, "Enabling notifications for the V1-Out/Client-In short BluetoothGattCharacteristic...");
+        if(!enableCharacteristicNotifications(gatt, v1OutClientIn, true)){
+            ESPLogger.d(LOG_TAG, "Failed to enable notifications for the V1-Out/Client-In short BluetoothGattCharacteristic...");
+            gatt.disconnect();
+            return;
+        }
     }
 
     @Override
