@@ -17,6 +17,8 @@ public class V19UserSettings extends UserSettings {
     public static final int TMF_BIT_INDEX = 1;
     public static final int LASER_REAR_BIT_INDEX = 2;
     public static final int CUSTOM_FREQUENCIES_BIT_INDEX = 3;
+    public static final int KA_ALWAYS_RADAR_PRIORITY_BIT_INDEX = 4;
+    public static final int FAST_LASER_DETECT_BIT_INDEX = 5;
 
     /**
      * Constructs a new user V1.9 settings instance backed with the provided userBytes.
@@ -182,6 +184,42 @@ public class V19UserSettings extends UserSettings {
      */
     public void setCustomFrequenciesEnabled(boolean enabled) {
         setBit(USER_BYTE_1, CUSTOM_FREQUENCIES_BIT_INDEX, !enabled);
+    }
+
+    /**
+     * Indicates if the Ka Always Radar Priority feature is enabled.
+     *
+     * @return True if enable
+     */
+    public boolean isKaAlwaysPriorityEnabled() {
+        return !isSet(USER_BYTE_1, KA_ALWAYS_RADAR_PRIORITY_BIT_INDEX);
+    }
+
+    /**
+     * Enables the Ka Always Radar Priority feature.
+     *
+     * @param enabled True to enable
+     */
+    public void setKaAlwaysRadarPriorityEnabled(boolean enabled) {
+        setBit(USER_BYTE_1, KA_ALWAYS_RADAR_PRIORITY_BIT_INDEX, !enabled);
+    }
+
+    /**
+     * Indicates if the Fast Laser Detection feature is enabled.
+     *
+     * @return True if enable
+     */
+    public boolean isFastLaserDetectEnabled() {
+        return isSet(USER_BYTE_1, FAST_LASER_DETECT_BIT_INDEX);
+    }
+
+    /**
+     * Enables the Fast Laser Detection feature.
+     *
+     * @param enabled True to enable
+     */
+    public void setFastLaserDetectEnabled(boolean enabled) {
+        setBit(USER_BYTE_1, FAST_LASER_DETECT_BIT_INDEX, enabled);
     }
 
     /**
