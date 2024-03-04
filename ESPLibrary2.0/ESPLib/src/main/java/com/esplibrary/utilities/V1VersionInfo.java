@@ -26,6 +26,19 @@ public final class V1VersionInfo {
     public final static double V1_GEN_2_PLATFORM_MAX_VERSION = 4.9999d;
     // V1 version that first had support for K band support
     private final static double K_BAND_SWEEP_SUPPORT = V1_GEN_2_PLATFORM_BASELINE_VERSION;
+    // V1 Gen2 version that first supported volume adjustment
+    public static final double VOLUME_SETTING_SUPPORT_START_VERSION = 4.1026d;
+    // V1 Gen2 version that first supported the Ka always priority user byte option
+    private final static double KA_ALWAYS_RADAR_PRIORITY_START_VERSION = 4.1031d;
+    // V1 Gen2 version that first supported the fast laser detection user byte option
+    private final static double FAST_LASER_DETECT_START_VERSION = 4.1031d;
+    // V1 Gen2 version that first allowed leaving the Bluetooth LED on when turning off the display
+    private final static double ALLOW_BT_ON_DISPLAY_OFF_START_VERSION = 4.1032d;
+    // V1 Gen2 version that first supported the Junk Alert bit in the respAlertData Aux0 byte
+    private final static double ALERT_DATA_REPORTS_JUNK_START_VERSION = 4.1032d;
+    // V1 Gen2 version that first supported adjusting the Ka sensitivity
+    private final static double KA_SENSITIVITY_ADJUST_START_VERSION = 4.1032d;
+
     // The ability to read the default sweeps form the V1 was added in version V3.8950.
     private final static double READ_SWEEP_DEFAULTS_START_VER = 3.8950d;
     // The TMF & Junk-K Fighter feature was turned on by default in version 3.8945
@@ -207,5 +220,74 @@ public final class V1VersionInfo {
      */
     public static boolean areDefaultSweepDefsAvailable(double version) {
         return (version >= READ_SWEEP_DEFAULTS_START_VER);
+    }
+
+    /**
+     * Indicates if changing the V1 volume setting supported for the specified V1 version.
+     *
+     * @param version V1 version
+     *
+     * @return True if the feature is available
+     */
+    public static boolean isVolumeChangeSupported (double version) {
+        return (version >= VOLUME_SETTING_SUPPORT_START_VERSION);
+    }
+
+    /**
+     * Indicates if the Ka always priority user byte feature is available for the
+     * specified V1 version.
+     *
+     * @param version V1 version
+     *
+     * @return True if the feature is available
+     */
+    public static boolean isKaAlwaysPriorityAvailable (double version) {
+        return (version >= KA_ALWAYS_RADAR_PRIORITY_START_VERSION);
+    }
+
+    /**
+     * Indicates if the fast laser detection user byte feature is available for the
+     * specified V1 version.
+     *
+     * @param version V1 version
+     *
+     * @return True if the feature is available
+     */
+    public static boolean isFastLaserDetectAvailable (double version) {
+        return (version >= FAST_LASER_DETECT_START_VERSION);
+    }
+
+    /**
+     * Indicates if keeping the Bluetooth LED on when sending RequestTurnOffMainDisplay
+     * is available for the specified V1 version.
+     *
+     * @param version V1 version
+     *
+     * @return True if the feature is available
+     */
+    public static boolean isKeepBTLedOnAvailable (double version) {
+        return (version >= ALLOW_BT_ON_DISPLAY_OFF_START_VERSION);
+    }
+
+    /**
+     * Indicates if the respAlertData reports junk alerts for the specified V1 version.
+     *
+     * @param version V1 version
+     *
+     * @return True if junk alerts are available
+     */
+    public static boolean isJunkAlertReported (double version) {
+        return (version >= ALERT_DATA_REPORTS_JUNK_START_VERSION);
+    }
+
+    /**
+     * Indicates if the specified V1 version supports adjusting the Ka sensitivity.
+     *
+     * @param version V1 version
+     *
+     * @return True if feature is available
+     */
+    public static boolean isKaSensitivityAdjustAvailable (double version) {
+        return (version >= KA_SENSITIVITY_ADJUST_START_VERSION);
     }
 }

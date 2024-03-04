@@ -36,6 +36,16 @@ public abstract class ESPPacket {
      * @param payload packet payload
      */
     public ESPPacket(DeviceId v1Type, byte [] payload) {
+        resetPacket (v1Type, payload);
+    }
+
+    /**
+     * Reset this packet back to the state it was in after construction
+     *
+     * @param v1Type V1 type
+     * @param payload packet payload
+     */
+    protected void resetPacket (DeviceId v1Type, byte [] payload) {
         boolean chksum = (v1Type == DeviceId.VALENTINE_ONE);
         final int framingLength = chksum ? 7 : 6;
         int length = (payload != null ? (payload.length + framingLength) : framingLength);

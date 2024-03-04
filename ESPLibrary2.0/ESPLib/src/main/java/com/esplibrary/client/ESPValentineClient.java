@@ -76,6 +76,7 @@ public class ESPValentineClient implements IESPClient {
 
     private final static String LOG_TAG = "ESPValentineClient";
 
+    private double mLastV1Version = 0.0d;
     /**
      * Underlying bluetooth connection.
      */
@@ -309,8 +310,9 @@ public class ESPValentineClient implements IESPClient {
             // Response should never be null but in case of bugs we wanna prevent a null pointer
             // exception.
             if (response != null) {
+                final String version = response.getVersion();
+                newVersionReceived (version);
                 if (callback != null) {
-                    final String version = response.getVersion();
                     // Make sure we got a valid version string.
                     if(version.length() != 7 || !Character.isAlphabetic(version.codePointAt(0))) {
                         callback.onDataReceived(null, "Received a bad version for " + deviceID.toString());
@@ -338,6 +340,9 @@ public class ESPValentineClient implements IESPClient {
     @Override
     public void requestVersionAsDouble(DeviceId device, ESPRequestedDataListener<Double> callback) {
         requestVersion(device, (deviceVersion, error) -> {
+            if ( error == null ){
+                newVersionReceived (deviceVersion);
+            }
             if (callback != null) {
                 if (error != null) {
                     callback.onDataReceived(null, error);
@@ -347,6 +352,13 @@ public class ESPValentineClient implements IESPClient {
                 callback.onDataReceived(ResponseVersion.getVersionDouble(deviceVersion), null);
             }
         });
+    }
+
+    private void newVersionReceived (String version) {
+        if (version.length() == 7 && version.codePointAt(0) == 'V') {
+            // This is a V1 version, so store it for later use
+            mLastV1Version = ResponseVersion.getVersionDouble (version);
+        }
     }
 
     @Override
@@ -911,18 +923,23 @@ public class ESPValentineClient implements IESPClient {
 
     @Override
     public void requestDisplayOn(final boolean on, ESPRequestListener callback) {
+        requestSetDisplayState (on, false, callback);
+    }
+
+    @Override
+    public void requestSetDisplayState(boolean displayOn, boolean keepBTLedOn, ESPRequestListener callback) {
         ESPPacket displayRequest;
-        if (on) {
+        if (displayOn) {
             displayRequest = new RequestTurnOnMainDisplay(mConnection.getValentineType());
         }
         else {
-            displayRequest = new RequestTurnOffMainDisplay(mConnection.getValentineType());
+            displayRequest = new RequestTurnOffMainDisplay(mConnection.getValentineType(), mLastV1Version, keepBTLedOn);
         }
 
         ResponseHandler<InfDisplayData> handler = new ResponseHandler<>();
         handler.addResponseID(PacketId.INFDISPLAYDATA);
         handler.successCallback = displayData -> {
-            if(displayData.isDisplayOn() == on) {
+            if(displayData.isDisplayOn() == displayOn) {
                 if (callback != null) {
                     callback.onRequestCompleted(null);
                 }

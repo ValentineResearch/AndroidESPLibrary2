@@ -19,6 +19,26 @@ public class V19UserSettings extends UserSettings {
     public static final int CUSTOM_FREQUENCIES_BIT_INDEX = 3;
     public static final int KA_ALWAYS_RADAR_PRIORITY_BIT_INDEX = 4;
     public static final int FAST_LASER_DETECT_BIT_INDEX = 5;
+    public static final int KA_SENSITIVITY_B0 = 6;
+    public static final int KA_SENSITIVITY_B1 = 7;
+
+    /**
+     * Ka Sensitivity Setting
+     */
+    public enum KaSensitivity {
+        /**
+         * Full Ka Sensitivity
+         */
+        Full,
+        /**
+         * Original Valentine One Gen2 Ka Sensitivity
+         */
+        Original,
+        /**
+         * Relaxed Ka Sensitivity
+         */
+        Relaxed
+    }
 
     /**
      * Constructs a new user V1.9 settings instance backed with the provided userBytes.
@@ -220,6 +240,34 @@ public class V19UserSettings extends UserSettings {
      */
     public void setFastLaserDetectEnabled(boolean enabled) {
         setBit(USER_BYTE_1, FAST_LASER_DETECT_BIT_INDEX, enabled);
+    }
+
+    public KaSensitivity getKaSensitivity() {
+        byte bitVal = (byte)((mUserBytes[1] & 0xFF) >> 6);
+        switch ( bitVal ){
+            default:
+            case 3: return KaSensitivity.Full;
+            case 2: return KaSensitivity.Original;
+            case 1: return KaSensitivity.Relaxed;
+        }
+    }
+
+    public void setKaSensitivity(KaSensitivity kaSensitivity) {
+        switch ( kaSensitivity ){
+            default:
+            case Full: // Gen2 value = 3
+                setBit(USER_BYTE_1, KA_SENSITIVITY_B0, true);
+                setBit(USER_BYTE_1, KA_SENSITIVITY_B1, true);
+                break;
+            case Original:  // Gen2 value = 2
+                setBit(USER_BYTE_1, KA_SENSITIVITY_B0, false);
+                setBit(USER_BYTE_1, KA_SENSITIVITY_B1, true);
+                break;
+            case Relaxed: // Gen2 value = 1
+                setBit(USER_BYTE_1, KA_SENSITIVITY_B0, true);
+                setBit(USER_BYTE_1, KA_SENSITIVITY_B1, false);
+                break;
+        }
     }
 
     /**

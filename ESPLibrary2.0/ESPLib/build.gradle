@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 2
-        versionName "2.0.3"
+        versionCode 3
+        versionName "2.0.4"
 
         buildConfigField("boolean", "ENABLE_LOGGING", "false")
         buildConfigField("boolean", "INFO_LOGGING", "false")

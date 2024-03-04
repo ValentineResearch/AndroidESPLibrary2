@@ -515,8 +515,18 @@ public interface IESPClient {
      * @param on        The new display state.
      * @param callback The {@link ESPRequestListener callback} that will be invoked when the
      *                 display packet is sent or if an error occurs.
+     * @deprecated Use {@link #requestSetDisplayState(boolean, boolean, ESPRequestListener)}
      */
     void requestDisplayOn(boolean on, ESPRequestListener callback);
+
+    /**
+     * Request to force the V1's display off and optionally keep the Bluetooth LED on.
+     * @param displayOn The new display state.
+     * @param keepBTLedOn Flag to determine if the Bluetooth LED should be kept on or off when the display is turned off. Ignored if displayOn is true.
+     * @param callback The {@link ESPRequestListener callback} that will be invoked when the
+     *                 display packet is sent or if an error occurs.
+     */
+    void requestSetDisplayState(boolean displayOn, boolean keepBTLedOn, ESPRequestListener callback);
 
     /**
      * Request to mute all alerts in the V1. The results of this packet can be verified using the

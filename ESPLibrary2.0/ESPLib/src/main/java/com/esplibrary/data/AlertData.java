@@ -338,6 +338,17 @@ public class AlertData {
     }
 
     /**
+     * Indicates if the alert has been junked out.
+     *
+     *
+     * @return True if the alert has been junked out.
+     */
+    public boolean isJunkAlert() {
+        byte aux0 = mData[AUX_BYTE_IDX];
+        return (aux0 & 0x40) != 0;
+    }
+
+    /**
      * Clears the alert data.
      */
     public void reset() {

@@ -55,6 +55,21 @@ public abstract class RequestPacket extends ESPPacket {
     }
 
     /**
+     * Re-initializes the {@link RequestPacket packet} with the provided packet data. This will
+     * reset the payload length using the provided data.
+     *
+     * @param v1Type
+     * @param origin
+     * @param dest
+     * @param packetId
+     * @param payload
+     */
+    protected void reinitPacket(DeviceId v1Type, DeviceId origin, DeviceId dest, @PacketId.PacketID int packetId, byte... payload) {
+        super.resetPacket(v1Type, payload);
+        init(v1Type, origin, dest, packetId, payload);
+    }
+
+    /**
      * Helper method for determining the payload length byte of an {@link ESPPacket} based on the payload array and if checksums are present.
      * @param data      Payload data for an {@link ESPPacket}.
      * @param checksum  Flag that indicates if checksums are to be used.
