@@ -66,7 +66,7 @@ public class ResponseVersion extends ESPPacket {
     }
 
     /**
-     * Returns the versions stirng as a {@code double}.
+     * Returns the versions string as a {@code double}.
      *
      * @return {@code double} equivalent of the version string
      */
@@ -82,8 +82,12 @@ public class ResponseVersion extends ESPPacket {
      */
     public static double getVersionDouble(String versionStr) {
         double version = 0.0d;
-        if(versionStr.length() == 7 && Character.isAlphabetic(versionStr.codePointAt(0))) {
-            version = Double.parseDouble(versionStr.substring(1));
+        try {
+            if (versionStr.length() == 7 && Character.isAlphabetic(versionStr.codePointAt(0))) {
+                version = Double.parseDouble(versionStr.substring(1));
+            }
+        } catch (Exception e){
+            // Nothing to do here. Just fall through and return zero.
         }
         return version;
     }

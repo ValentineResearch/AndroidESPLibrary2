@@ -348,8 +348,14 @@ public class ESPValentineClient implements IESPClient {
                     callback.onDataReceived(null, error);
                     return;
                 }
-                // Auto box the version into a double.
-                callback.onDataReceived(ResponseVersion.getVersionDouble(deviceVersion), null);
+
+                double version = ResponseVersion.getVersionDouble(deviceVersion);
+                if (version == 0.0d) {
+                    callback.onDataReceived(null, "Unable to parse version number for " + device.toString());
+                    return;
+                }
+
+                callback.onDataReceived(version, null);
             }
         });
     }
