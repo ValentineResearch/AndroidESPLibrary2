@@ -520,6 +520,13 @@ public interface IESPClient {
     void requestDisplayOn(boolean on, ESPRequestListener callback);
 
     /**
+     * Request to abort the V1's current audio delay.
+     * @param callback The {@link ESPRequestListener callback} that will be invoked when the
+     *                 display packet is sent or if an error occurs.
+     */
+    void requestAbortAudioDelay(ESPRequestListener callback);
+
+    /**
      * Request to force the V1's display off and optionally keep the Bluetooth LED on.
      * @param displayOn The new display state.
      * @param keepBTLedOn Flag to determine if the Bluetooth LED should be kept on or off when the display is turned off. Ignored if displayOn is true.

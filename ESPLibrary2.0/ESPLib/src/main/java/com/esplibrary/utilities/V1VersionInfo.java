@@ -38,6 +38,12 @@ public final class V1VersionInfo {
     private final static double ALERT_DATA_REPORTS_JUNK_START_VERSION = 4.1032d;
     // V1 Gen2 version that first supported adjusting the Ka sensitivity
     private final static double KA_SENSITIVITY_ADJUST_START_VERSION = 4.1032d;
+    // V1 Gen2 version that first supported turning off the startup sequence
+    private final static double ALLOW_START_SEQUENCE_OFF_START_VERSION = 4.1035;
+    // V1 Gen2 version that first supported turning off the display when no alerts are present
+    private final static double ALLOW_RESTING_DISPLAY_OFF_START_VERSION = 4.1035;
+    // V1 Gen2 version that first supported turning on the BSM Plus feature
+    private final static double ALLOW_BSM_PLUS_ON_START_VERSION = 4.1035;
 
     // The ability to read the default sweeps form the V1 was added in version V3.8950.
     private final static double READ_SWEEP_DEFAULTS_START_VER = 3.8950d;
@@ -290,4 +296,39 @@ public final class V1VersionInfo {
     public static boolean isKaSensitivityAdjustAvailable (double version) {
         return (version >= KA_SENSITIVITY_ADJUST_START_VERSION);
     }
+
+    /**
+     * Indicates if the specified V1 version supports turning off the startup sequence.
+     *
+     * @param version V1 version
+     *
+     * @return True if feature is available
+     */
+    public static boolean isDisableStartupSequenceAvailable(double version) {
+        return (version >= ALLOW_START_SEQUENCE_OFF_START_VERSION);
+    }
+
+    /**
+     * Indicates if the specified V1 version supports turning off the main display when no alerts are present.
+     *
+     * @param version V1 version
+     *
+     * @return True if feature is available
+     */
+    public static boolean isDisableRestingDisplayAvailable(double version) {
+        return (version >= ALLOW_RESTING_DISPLAY_OFF_START_VERSION);
+    }
+
+    /**
+     * Indicates if the specified V1 version supports enabling the BSM Plus feature.
+     *
+     * @param version V1 version
+     *
+     * @return True if feature is available
+     */
+    public static boolean isEnableBSMPlusAvailable(double version) {
+        return (version >= ALLOW_BSM_PLUS_ON_START_VERSION);
+    }
+
+
 }

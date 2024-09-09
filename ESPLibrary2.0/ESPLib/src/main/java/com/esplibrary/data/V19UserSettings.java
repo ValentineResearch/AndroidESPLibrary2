@@ -21,7 +21,10 @@ public class V19UserSettings extends UserSettings {
     public static final int FAST_LASER_DETECT_BIT_INDEX = 5;
     public static final int KA_SENSITIVITY_B0 = 6;
     public static final int KA_SENSITIVITY_B1 = 7;
-
+    // User byte 2 bit indices (zero-based)
+    public static final int STARTUP_SEQUENCE_BIT_INDEX = 0;
+    public static final int RESTING_DISPLAY_BIT_INDEX = 1;
+    public static final int BSM_PLUS_BIT_INDEX = 2;
     /**
      * Ka Sensitivity Setting
      */
@@ -268,6 +271,60 @@ public class V19UserSettings extends UserSettings {
                 setBit(USER_BYTE_1, KA_SENSITIVITY_B1, false);
                 break;
         }
+    }
+
+    /**
+     * Indicates if the Startup Sequence feature is enabled.
+     *
+     * @return True if enable
+     */
+    public boolean isStartupSequenceEnabled() {
+        return isSet(USER_BYTE_2, STARTUP_SEQUENCE_BIT_INDEX);
+    }
+
+    /**
+     * Enables the Startup Sequence feature.
+     *
+     * @param enabled True to enable
+     */
+    public void setStartupSequenceEnabled(boolean enabled) {
+        setBit(USER_BYTE_2, STARTUP_SEQUENCE_BIT_INDEX, enabled);
+    }
+
+    /**
+     * Indicates if the Startup Sequence feature is enabled.
+     *
+     * @return True if enable
+     */
+    public boolean isRestingDisplayEnabled() {
+        return isSet(USER_BYTE_2, RESTING_DISPLAY_BIT_INDEX);
+    }
+
+    /**
+     * Enables the Startup Sequence feature.
+     *
+     * @param enabled True to enable
+     */
+    public void setRestingDisplayEnabled(boolean enabled) {
+        setBit(USER_BYTE_2, RESTING_DISPLAY_BIT_INDEX, enabled);
+    }
+
+    /**
+     * Indicates if the BSM PLUS feature is enabled.
+     *
+     * @return True if enable
+     */
+    public boolean isBSMPlusEnabled() {
+        return !isSet(USER_BYTE_2, BSM_PLUS_BIT_INDEX);
+    }
+
+    /**
+     * Enables the Startup Sequence feature.
+     *
+     * @param enabled True to enable
+     */
+    public void setBSMPlusEnabled(boolean enabled) {
+        setBit(USER_BYTE_2, BSM_PLUS_BIT_INDEX, !enabled);
     }
 
     /**

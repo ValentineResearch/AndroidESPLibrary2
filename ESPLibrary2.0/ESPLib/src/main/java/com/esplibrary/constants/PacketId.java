@@ -44,6 +44,7 @@ public class PacketId {
             REQCURRENTVOLUME,
             RESPCURRENTVOLUME,
             REQWRITEVOLUME,
+            REQABORTAUDIODELAY,
             REQSTARTALERTDATA,
             REQSTOPALERTDATA,
             RESPALERTDATA,
@@ -124,8 +125,10 @@ public class PacketId {
     public static final int REQCURRENTVOLUME            = 0x37;
     /**Packet Identifier for the current volume setting response**/
     public static final int RESPCURRENTVOLUME           = 0x38;
-    /**Packet Identifier for updating the current volumnbe settings request**/
+    /**Packet Identifier for updating the current volume settings request**/
     public static final int REQWRITEVOLUME              = 0x39;
+    /**Packet Identifier for updating the current volume settings request**/
+    public static final int REQABORTAUDIODELAY          = 0x3A;
     /**Packet Identifier for Start Alert Data Request**/
     public static final int REQSTARTALERTDATA 			= 0x41;
     /**Packet Identifier for Stop Alert Data Request*/
@@ -165,7 +168,6 @@ public class PacketId {
      * Retrieves the String representation of the packetId value.
      *
      * @param packetId  The packetId of the desired packet type String you want returned.
-     *
      *                  Possible Values: {
      *                  {@link PacketId#REQVERSION}, {@link PacketId#RESPVERSION}, {@link PacketId#REQSERIALNUMBER},
      *                  {@link PacketId#RESPSERIALNUMBER}, {@link PacketId#REQUSERBYTES}, {@link PacketId#RESPUSERBYTES},
@@ -214,6 +216,7 @@ public class PacketId {
             case REQCURRENTVOLUME: return "REQCURRENTVOLUME";
             case RESPCURRENTVOLUME: return "RESPCURRENTVOLUME";
             case REQWRITEVOLUME: return "REQWRITEVOLUME";
+            case REQABORTAUDIODELAY: return "REQABORTAUDIODELAY";
             case REQSTARTALERTDATA: return "REQSTARTALERTDATA";
             case REQSTOPALERTDATA: return "REQSTOPALERTDATA";
             case RESPALERTDATA: return "RESPALERTDATA";

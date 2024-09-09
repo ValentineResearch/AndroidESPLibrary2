@@ -27,6 +27,7 @@ import com.esplibrary.data.SweepSection;
 import com.esplibrary.data.UserSettings;
 import com.esplibrary.packets.ESPPacket;
 import com.esplibrary.packets.InfDisplayData;
+import com.esplibrary.packets.request.RequestAbortAudioDelay;
 import com.esplibrary.packets.request.RequestAllSweepDefinitions;
 import com.esplibrary.packets.request.RequestBatteryVoltage;
 import com.esplibrary.packets.request.RequestChangeMode;
@@ -960,6 +961,26 @@ public class ESPValentineClient implements IESPClient {
             }
         };
         mConnection.addRequest(new ESPRequest(displayRequest, handler));
+    }
+
+    @Override
+    public void requestAbortAudioDelay(ESPRequestListener callback)
+    {
+        ESPPacket abortAudioRequest;
+        abortAudioRequest = new RequestAbortAudioDelay(mConnection.getValentineType());
+        ResponseHandler handler = new ResponseHandler<>();
+        handler.successCallback = packet -> {
+            if (callback != null) {
+                callback.onRequestCompleted(null);
+            }
+            return true;
+        };
+        handler.failureCallback = error -> {
+            if (callback != null) {
+                callback.onRequestCompleted(error);
+            }
+        };
+        mConnection.addRequest(new ESPRequest(abortAudioRequest, handler));
     }
 
     @Override

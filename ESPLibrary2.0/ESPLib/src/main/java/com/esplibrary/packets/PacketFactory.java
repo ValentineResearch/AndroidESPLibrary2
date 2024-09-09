@@ -6,6 +6,7 @@
 package com.esplibrary.packets;
 
 import com.esplibrary.constants.PacketId;
+import com.esplibrary.packets.request.RequestAbortAudioDelay;
 import com.esplibrary.packets.request.RequestAllSweepDefinitions;
 import com.esplibrary.packets.request.RequestBatteryVoltage;
 import com.esplibrary.packets.request.RequestChangeMode;
@@ -31,6 +32,7 @@ import com.esplibrary.packets.request.RequestVersion;
 import com.esplibrary.packets.request.RequestWriteSweepDefinition;
 import com.esplibrary.packets.request.RequestWriteUserBytes;
 import com.esplibrary.packets.request.RequestWriteVolume;
+import com.esplibrary.packets.request.RequestAbortAudioDelay;
 import com.esplibrary.packets.response.ResponseAlertData;
 import com.esplibrary.packets.response.ResponseBatteryVoltage;
 import com.esplibrary.packets.response.ResponseCurrentVolume;
@@ -118,6 +120,8 @@ public class PacketFactory {
                 return new ResponseCurrentVolume(packetLength);
             case PacketId.REQWRITEVOLUME:
                 return new RequestWriteVolume(packetLength);
+            case PacketId.REQABORTAUDIODELAY:
+                return new RequestAbortAudioDelay(packetLength);
             case PacketId.REQSTARTALERTDATA:
                 return new RequestStartAlertData(packetLength);
             case PacketId.REQSTOPALERTDATA:

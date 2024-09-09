@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -111,7 +112,7 @@ public class MainActivity extends ESPActivity implements V1ScannerDialog.V1Selec
         if(mSupportsBT) {
             // If the activity isn't being recreated, launch the scanning dialog
             if (savedInstanceState == null) {
-                if (handleLocationPermission()) {
+                if (handleBTPermission()) {
                     new V1ScannerDialog().show(getSupportFragmentManager(),
                             "V1_SCANNER_DIALOG_TAG");
                 }
@@ -169,35 +170,80 @@ public class MainActivity extends ESPActivity implements V1ScannerDialog.V1Selec
         }
     }
 
+
+
+    /**
+     * Helper method for checking if the app has been granted access to the provided permission.
+     *
+     * @param permission The name of the permission being checked.
+     * @param context The context to use for the permission check
+     */
+    private boolean hasPermission(String permission, Context context) {
+        return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /**
+     * Helper method for checking if the app has been granted access to all permissions needed for Bluetooth.
+     *
+     * @param context The context to use for the permission check
+     */
+    private boolean hasAllBluetoothPermissions (Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+            // Starting with Android 12, use the Bluetooth permission instead of the location permission
+            if (!hasPermission (Manifest.permission.BLUETOOTH_SCAN, context) ||
+                    !hasPermission (Manifest.permission.BLUETOOTH_CONNECT, context)){
+                return false;
+            }
+        }
+        else {
+            // Prior to Android 12, use the location permission to allow Bluetooth access
+            if (!hasPermission (Manifest.permission.ACCESS_FINE_LOCATION, context)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Checks if the app has the location permission, if not request its.
      *
      * @return True if the app has the permission to use location
      */
-    private boolean handleLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    // Show a dialog indicating why we need this permission
-                    new AlertDialog.Builder(this)
-                            .setMessage("The location permission is required to discover Bluetooth Devices")
-                            .setPositiveButton("Request", (dialog, which) -> {
-                                ActivityCompat.requestPermissions(this,
-                                        new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
-                                        REQUEST_LOCATION_PERMISSION);
-                            })
-                            .setNegativeButton("Cancel", null)
-                            .setCancelable(false)
-                            .show();
-                    return false;
-                }
-                // We don't need to show a permission rationale, just request the permission.
-                ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
-                        REQUEST_LOCATION_PERMISSION);
+    private boolean handleBTPermission() {
+        if ( !hasAllBluetoothPermissions (this) ) {
+            String [] permissions = getRequiredBTPermissions();
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0])) {
+                new AlertDialog.Builder(this)
+                        .setMessage("Permission is required to discover Bluetooth Devices")
+                        .setPositiveButton("Request", (dialog, which) -> {
+                            ActivityCompat.requestPermissions(this, permissions, REQUEST_LOCATION_PERMISSION);
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .setCancelable(false)
+                        .show();
                 return false;
             }
+
+            // Make the request here without a rationale dialog
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_LOCATION_PERMISSION);
+            return false;
         }
         return true;
+    }
+
+    public static String [] getRequiredBTPermissions () {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+            return new String [] { Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT };
+        }
+        return new String [] { Manifest.permission.ACCESS_FINE_LOCATION };
+    }
+
+    public static String getBTPermissionForRationale () {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+            return Manifest.permission.BLUETOOTH_SCAN;
+        }
+        return Manifest.permission.ACCESS_FINE_LOCATION;
     }
 
     @Override
@@ -380,7 +426,7 @@ public class MainActivity extends ESPActivity implements V1ScannerDialog.V1Selec
      * @param view clicked button
      */
     public void scan(View view) {
-        if (handleLocationPermission()) {
+        if (handleBTPermission()) {
             new V1ScannerDialog().show(getSupportFragmentManager(),
                     "V1_SCANNER_DIALOG_TAG");
         }

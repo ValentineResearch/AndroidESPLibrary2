@@ -2,14 +2,14 @@ apply plugin: 'com.android.library'
 
 android {
     compileOptions.encoding = 'UTF-8'
-    compileSdkVersion 33
-    buildToolsVersion '30.0.3'
+    compileSdkVersion 34
+    buildToolsVersion '34.0.0'
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 33
-        versionCode 3
-        versionName "2.0.4"
+        minSdkVersion 29
+        targetSdkVersion 34
+        versionCode 4
+        versionName "2.0.5"
 
         buildConfigField("boolean", "ENABLE_LOGGING", "false")
         buildConfigField("boolean", "INFO_LOGGING", "false")
