@@ -6,6 +6,8 @@ public class Constants {
 
     /**Concealed Display (CD) byte value.*/
     public final static byte CONCEALED_DISPLAY_BYTE = (byte) 0x00;
+    /**Tech Display byte value is the same as the Concealed Display.*/
+    public final static byte TECH_DISPLAY_BYTE = CONCEALED_DISPLAY_BYTE;
     /**Remote Audio byte value.*/
     public final static byte REMOTE_AUDIO_BYTE = (byte) 0x01;
     /**SAVVY byte value.*/

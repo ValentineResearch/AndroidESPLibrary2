@@ -12,9 +12,12 @@ import com.esplibrary.constants.PacketId;
  * Created by JDavis on 3/13/2016.
  */
 public class RequestUserBytes extends RequestPacket {
-
     public RequestUserBytes(DeviceId v1Type) {
         super(v1Type, DeviceId.V1CONNECTION, v1Type, PacketId.REQUSERBYTES, null);
+    }
+
+    public RequestUserBytes(DeviceId v1Type, DeviceId destination) {
+        super(v1Type, DeviceId.V1CONNECTION, destination, PacketId.REQUSERBYTES, null);
     }
 
     public RequestUserBytes(int packetLength) {

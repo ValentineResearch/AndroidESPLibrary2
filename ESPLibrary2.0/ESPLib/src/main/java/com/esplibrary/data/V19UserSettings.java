@@ -25,6 +25,8 @@ public class V19UserSettings extends UserSettings {
     public static final int STARTUP_SEQUENCE_BIT_INDEX = 0;
     public static final int RESTING_DISPLAY_BIT_INDEX = 1;
     public static final int BSM_PLUS_BIT_INDEX = 2;
+    public static final int AUTO_MUTE_B0 = 3;
+    public static final int AUTO_MUTE_B1 = 4;
     /**
      * Ka Sensitivity Setting
      */
@@ -41,6 +43,23 @@ public class V19UserSettings extends UserSettings {
          * Relaxed Ka Sensitivity
          */
         Relaxed
+    }
+    /**
+     * Auto Mute Setting
+     */
+    public enum AutoMute {
+        /**
+         * Auto Mute Off
+         */
+        Off,
+        /**
+         * Auto Mute On, no unmuting
+         */
+        On,
+        /**
+         * Auto Mute On, Unmute is allowed
+         */
+        Advanced
     }
 
     /**
@@ -325,6 +344,34 @@ public class V19UserSettings extends UserSettings {
      */
     public void setBSMPlusEnabled(boolean enabled) {
         setBit(USER_BYTE_2, BSM_PLUS_BIT_INDEX, !enabled);
+    }
+
+    public AutoMute getAutoMute() {
+        byte bitVal = (byte)((mUserBytes[2] & 0x18) >> 3);
+        switch ( bitVal ){
+            default:
+            case 3: return AutoMute.Off;
+            case 2: return AutoMute.On;
+            case 1: return AutoMute.Advanced;
+        }
+    }
+
+    public void setAutoMute(AutoMute autoMute) {
+        switch ( autoMute ){
+            default:
+            case Off: // Gen2 value = 3
+                setBit(USER_BYTE_2, AUTO_MUTE_B0, true);
+                setBit(USER_BYTE_2, AUTO_MUTE_B1, true);
+                break;
+            case On:  // Gen2 value = 2
+                setBit(USER_BYTE_2, AUTO_MUTE_B0, false);
+                setBit(USER_BYTE_2, AUTO_MUTE_B1, true);
+                break;
+            case Advanced: // Gen2 value = 1
+                setBit(USER_BYTE_2, AUTO_MUTE_B0, true);
+                setBit(USER_BYTE_2, AUTO_MUTE_B1, false);
+                break;
+        }
     }
 
     /**

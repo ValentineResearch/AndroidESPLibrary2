@@ -20,7 +20,15 @@ public class RequestTurnOffMainDisplay extends RequestPacket {
 
     public RequestTurnOffMainDisplay(DeviceId v1Type, double v1Version, boolean keepBTLedOn) {
         super(v1Type, DeviceId.V1CONNECTION, v1Type, PacketId.REQTURNOFFMAINDISPLAY, null);
+        initForBTLED (keepBTLedOn, v1Version);
+    }
 
+    public RequestTurnOffMainDisplay(DeviceId v1Type, DeviceId destination, double v1Version, boolean keepBTLedOn) {
+        super(v1Type, DeviceId.V1CONNECTION, destination, PacketId.REQTURNOFFMAINDISPLAY, null);
+        initForBTLED (keepBTLedOn, v1Version);
+    }
+
+    private void initForBTLED (boolean keepBTLedOn, double v1Version) {
         if ( keepBTLedOn && V1VersionInfo.isKeepBTLedOnAvailable(v1Version)){
             // Only add the optional payload byte if keeping the Bluetooth LED on and the V1 supports the feature.
             reinitPacket (getValentineType(), getOrigin(), getDestination(), PacketId.REQTURNOFFMAINDISPLAY, (byte)0x01);

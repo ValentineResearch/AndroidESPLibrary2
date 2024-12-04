@@ -184,7 +184,7 @@ public class V1connectionDemoWrapper extends V1connectionBaseWrapper {
                     break;
                 }
                 case PacketId.REQUSERBYTES:
-                    if (mV1UserBytes != null) {
+                    if (mV1UserBytes != null && req.isForV1()) {
                         if (respHandler.successCallback != null) {
                             respHandler.successCallback.onPacketReceived(mV1UserBytes);
                         }

@@ -17,6 +17,10 @@ public class RequestTurnOnMainDisplay extends RequestPacket {
         super(v1Type, DeviceId.V1CONNECTION, v1Type, PacketId.REQTURNONMAINDISPLAY, null);
     }
 
+    public RequestTurnOnMainDisplay(DeviceId v1Type, DeviceId destination) {
+        super(v1Type, DeviceId.V1CONNECTION, destination, PacketId.REQTURNONMAINDISPLAY, null);
+    }
+
     public RequestTurnOnMainDisplay(int packetLength) {
         super(packetLength);
     }

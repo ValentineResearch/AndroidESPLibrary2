@@ -28,6 +28,7 @@ import com.esplibrary.data.UserSettings;
 import com.esplibrary.packets.ESPPacket;
 import com.esplibrary.packets.InfDisplayData;
 import com.esplibrary.packets.request.RequestAbortAudioDelay;
+import com.esplibrary.packets.request.RequestDisplayCurrentVolume;
 import com.esplibrary.packets.request.RequestAllSweepDefinitions;
 import com.esplibrary.packets.request.RequestBatteryVoltage;
 import com.esplibrary.packets.request.RequestChangeMode;
@@ -426,7 +427,12 @@ public class ESPValentineClient implements IESPClient {
 
     @Override
     public void requestUserBytes(ESPRequestedDataListener<byte[]> callback) {
-        ESPPacket userSettingsRequest = new RequestUserBytes(mConnection.getValentineType());
+        requestUserBytes (mConnection.getValentineType(), callback);
+    }
+
+    @Override
+    public void requestUserBytes(DeviceId device, ESPRequestedDataListener<byte[]> callback) {
+        ESPPacket userSettingsRequest = new RequestUserBytes(mConnection.getValentineType(), device);
         // Create a response respHandler that will invoked the esp packet listener callback.
         ResponseHandler<ResponseUserBytes> handler = new ResponseHandler<>();
         handler.addResponseID(PacketId.RESPUSERBYTES);
@@ -451,7 +457,12 @@ public class ESPValentineClient implements IESPClient {
 
     @Override
     public void requestWriteUserBytes(byte[] userBytes, ESPRequestListener callback) {
-        RequestWriteUserBytes userBytesRequest = new RequestWriteUserBytes(mConnection.getValentineType(), userBytes);
+        requestWriteUserBytes(mConnection.getValentineType(), userBytes, callback);
+    }
+
+    @Override
+    public void requestWriteUserBytes(DeviceId device, byte[] userBytes, ESPRequestListener callback) {
+        RequestWriteUserBytes userBytesRequest = new RequestWriteUserBytes(mConnection.getValentineType(), device, userBytes);
         ResponseHandler handler = new ResponseHandler<>();
         handler.successCallback = packet -> {
             // Consider requesting the sent user bytes and performing a comparison on them with
@@ -935,12 +946,18 @@ public class ESPValentineClient implements IESPClient {
 
     @Override
     public void requestSetDisplayState(boolean displayOn, boolean keepBTLedOn, ESPRequestListener callback) {
+         DeviceId id = mConnection.getValentineType();
+        requestSetDisplayState(id, displayOn, keepBTLedOn, callback);
+    }
+
+    @Override
+    public void requestSetDisplayState(DeviceId device, boolean displayOn, boolean keepBTLedOn, ESPRequestListener callback){
         ESPPacket displayRequest;
         if (displayOn) {
-            displayRequest = new RequestTurnOnMainDisplay(mConnection.getValentineType());
+            displayRequest = new RequestTurnOnMainDisplay(mConnection.getValentineType(), device);
         }
         else {
-            displayRequest = new RequestTurnOffMainDisplay(mConnection.getValentineType(), mLastV1Version, keepBTLedOn);
+            displayRequest = new RequestTurnOffMainDisplay(mConnection.getValentineType(), device, mLastV1Version, keepBTLedOn);
         }
 
         ResponseHandler<InfDisplayData> handler = new ResponseHandler<>();
@@ -981,6 +998,26 @@ public class ESPValentineClient implements IESPClient {
             }
         };
         mConnection.addRequest(new ESPRequest(abortAudioRequest, handler));
+    }
+
+    @Override
+    public void requestDisplayCurrentVolume(ESPRequestListener callback)
+    {
+        ESPPacket displayCurVolRequest;
+        displayCurVolRequest = new RequestDisplayCurrentVolume(mConnection.getValentineType());
+        ResponseHandler handler = new ResponseHandler<>();
+        handler.successCallback = packet -> {
+            if (callback != null) {
+                callback.onRequestCompleted(null);
+            }
+            return true;
+        };
+        handler.failureCallback = error -> {
+            if (callback != null) {
+                callback.onRequestCompleted(error);
+            }
+        };
+        mConnection.addRequest(new ESPRequest(displayCurVolRequest, handler));
     }
 
     @Override

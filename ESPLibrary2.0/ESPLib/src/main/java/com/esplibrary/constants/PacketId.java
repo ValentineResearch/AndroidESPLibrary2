@@ -45,6 +45,7 @@ public class PacketId {
             RESPCURRENTVOLUME,
             REQWRITEVOLUME,
             REQABORTAUDIODELAY,
+            REQDISPLAYCURRENTVOLUME,
             REQSTARTALERTDATA,
             REQSTOPALERTDATA,
             RESPALERTDATA,
@@ -127,8 +128,10 @@ public class PacketId {
     public static final int RESPCURRENTVOLUME           = 0x38;
     /**Packet Identifier for updating the current volume settings request**/
     public static final int REQWRITEVOLUME              = 0x39;
-    /**Packet Identifier for updating the current volume settings request**/
+    /**Packet Identifier for aborting the delay between audio beeps on the V1 Gen2**/
     public static final int REQABORTAUDIODELAY          = 0x3A;
+    /**Packet Identifier for displaying the current volume**/
+    public static final int REQDISPLAYCURRENTVOLUME     = 0x3B;
     /**Packet Identifier for Start Alert Data Request**/
     public static final int REQSTARTALERTDATA 			= 0x41;
     /**Packet Identifier for Stop Alert Data Request*/
@@ -217,6 +220,7 @@ public class PacketId {
             case RESPCURRENTVOLUME: return "RESPCURRENTVOLUME";
             case REQWRITEVOLUME: return "REQWRITEVOLUME";
             case REQABORTAUDIODELAY: return "REQABORTAUDIODELAY";
+            case REQDISPLAYCURRENTVOLUME: return "REQDISPLAYCURRENTVOLUME";
             case REQSTARTALERTDATA: return "REQSTARTALERTDATA";
             case REQSTOPALERTDATA: return "REQSTOPALERTDATA";
             case RESPALERTDATA: return "RESPALERTDATA";

@@ -12,6 +12,8 @@ public enum DeviceId {
 
     /** Concealed Display ESP device */
     CONCEALED_DISPLAY(Constants.CONCEALED_DISPLAY_BYTE, "Concealed Display"),
+    /** Tech Display ESP device uses the same device id as the Concealed Display */
+    TECH_DISPLAY(Constants.TECH_DISPLAY_BYTE, "Tech Display"),
     /**Remote Audio ESP device */
     REMOTE_AUDIO(Constants.REMOTE_AUDIO_BYTE, "Remote Audio"),
     /**Savvy ESP device */

@@ -22,6 +22,10 @@ public class RequestWriteUserBytes extends RequestPacket {
         super(v1Type, DeviceId.V1CONNECTION, v1Type, PacketId.REQWRITEUSERBYTES, userBytes);
     }
 
+    public RequestWriteUserBytes(DeviceId v1Type, DeviceId destination, byte [] userBytes) {
+        super(v1Type, DeviceId.V1CONNECTION, destination, PacketId.REQWRITEUSERBYTES, userBytes);
+    }
+
     public RequestWriteUserBytes(int packetLength) {
         super(packetLength);
     }

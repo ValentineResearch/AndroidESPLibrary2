@@ -44,6 +44,8 @@ public final class V1VersionInfo {
     private final static double ALLOW_RESTING_DISPLAY_OFF_START_VERSION = 4.1035;
     // V1 Gen2 version that first supported turning on the BSM Plus feature
     private final static double ALLOW_BSM_PLUS_ON_START_VERSION = 4.1035;
+    // V1 Gen2 version that first supported turning on the Auto Mute feature
+    private final static double ALLOW_AUTO_MUTE_START_VERSION = 4.1036;
 
     // The ability to read the default sweeps form the V1 was added in version V3.8950.
     private final static double READ_SWEEP_DEFAULTS_START_VER = 3.8950d;
@@ -330,5 +332,14 @@ public final class V1VersionInfo {
         return (version >= ALLOW_BSM_PLUS_ON_START_VERSION);
     }
 
-
+    /**
+     * Indicates if the specified V1 version supports enabling Auto Mute.
+     *
+     * @param version V1 version
+     *
+     * @return True if feature is available
+     */
+    public static boolean isAutoMuteAvailable (double version) {
+        return (version >= ALLOW_AUTO_MUTE_START_VERSION);
+    }
 }
