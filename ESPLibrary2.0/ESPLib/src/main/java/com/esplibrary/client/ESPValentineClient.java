@@ -961,16 +961,28 @@ public class ESPValentineClient implements IESPClient {
         }
 
         ResponseHandler<InfDisplayData> handler = new ResponseHandler<>();
-        handler.addResponseID(PacketId.INFDISPLAYDATA);
-        handler.successCallback = displayData -> {
-            if(displayData.isDisplayOn() == displayOn) {
+        if ( device == DeviceId.TECH_DISPLAY ){
+            // There is no response from the Tech Display to indicate whether or not this was successful. Execute the success callback if the command was sent.
+            handler.successCallback = success -> {
                 if (callback != null) {
                     callback.onRequestCompleted(null);
                 }
                 return true;
-            }
-            return false;
-        };
+            };
+        }
+        else {
+            // Wait for display data from the V1 to verify the display is in the correct state
+            handler.addResponseID(PacketId.INFDISPLAYDATA);
+            handler.successCallback = displayData -> {
+                if (displayData.isDisplayOn() == displayOn) {
+                    if (callback != null) {
+                        callback.onRequestCompleted(null);
+                    }
+                    return true;
+                }
+                return false;
+            };
+        }
         // If we encounter an error we want to return the V1's current mute status.
         handler.failureCallback = error -> {
             if(callback != null) {
