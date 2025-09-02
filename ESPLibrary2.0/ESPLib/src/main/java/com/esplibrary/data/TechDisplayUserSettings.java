@@ -12,7 +12,6 @@ import androidx.annotation.IntRange;
 import androidx.annotation.Nullable;
 
 import com.esplibrary.utilities.ByteUtils;
-import com.esplibrary.utilities.V1VersionInfo;
 
 import java.util.Arrays;
 
@@ -30,8 +29,9 @@ public class TechDisplayUserSettings implements Parcelable {
 
     public static final int V1_DISPLAY_OFF_ON_BIT_INDEX = 0;      // 1 = V1 display is off
     public static final int TECH_DISPLAY_ON_OFF_BIT_INDEX = 1;    // 1 = Tech Display is on
-    public static final int EXTENDED_RECALL_MODE_TIMEOUT_OFF_ON_BIT_INDEX = 2;      // 1 = V1 display is off
-
+    public static final int EXTENDED_RECALL_MODE_TIMEOUT_OFF_ON_BIT_INDEX = 2;      // 1 = Extended recall timeout ON
+    public static final int RESTING_DISPLAY_BIT_INDEX = 3;
+    public static final int EXTENDED_FREQUENCY_DISPLAY_BIT_INDEX = 4;       // 1 = Extended frequency display ON
 
     protected final byte [] mUserBytes;
 
@@ -102,6 +102,42 @@ public class TechDisplayUserSettings implements Parcelable {
      */
     public void setExtendedRecallModeTimeoutOn(boolean enabled) {
         setBit(USER_BYTE_0, EXTENDED_RECALL_MODE_TIMEOUT_OFF_ON_BIT_INDEX, !enabled);
+    }
+
+    /**
+     * Indicates if the resting display is disabled.
+     *
+     * @return True if the Tech Display is configured to disable the resting display.
+     */
+    public boolean isRestingDisplayEnabled() {
+        return isSet(USER_BYTE_0, RESTING_DISPLAY_BIT_INDEX);
+    }
+
+    /**
+     * Configure the resting display to be on or off.
+     *
+     * @param enabled True to turn off the resting display, false to keep it on
+     */
+    public void setRestingDisplayEnabled(boolean enabled) {
+        setBit(USER_BYTE_0, RESTING_DISPLAY_BIT_INDEX, enabled);
+    }
+
+    /**
+     * Indicates if the extended Frequency display is enabled.
+     *
+     * @return True if the Tech Display is configured to allow extended frequency display
+     */
+    public boolean isExtendedFrequencyDisplayOn() {
+        return !isSet(USER_BYTE_0, EXTENDED_FREQUENCY_DISPLAY_BIT_INDEX);
+    }
+
+    /**
+     * Configure the extended frequency display to be on or off.
+     *
+     * @param enabled True to allow extended frequency display, false to turn it off.
+     */
+    public void setExtendedFrequencyDisplay(boolean enabled) {
+        setBit(USER_BYTE_0, EXTENDED_FREQUENCY_DISPLAY_BIT_INDEX, !enabled);
     }
 
     /**

@@ -4,10 +4,10 @@ android {
     defaultConfig {
         applicationId "come.valentineresearch.hellov1"
         minSdkVersion 29
-        targetSdkVersion 34
-        compileSdk 34
-        versionCode 3
-        versionName "1.0.3"
+        targetSdkVersion 35
+        compileSdk 35
+        versionCode 4
+        versionName "1.0.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

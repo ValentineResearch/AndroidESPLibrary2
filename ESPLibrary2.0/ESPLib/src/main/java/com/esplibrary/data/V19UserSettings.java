@@ -27,6 +27,18 @@ public class V19UserSettings extends UserSettings {
     public static final int BSM_PLUS_BIT_INDEX = 2;
     public static final int AUTO_MUTE_B0 = 3;
     public static final int AUTO_MUTE_B1 = 4;
+    public static final int K_SENSITIVITY_B0 = 5;
+    public static final int K_SENSITIVITY_B1 = 6;
+    public static final int MRCT_BIT_INDEX = 7;
+    // User byte 3 bit indices (zero-based)
+    public static final int X_SENSITIVITY_B0 = 0;
+    public static final int X_SENSITIVITY_B1 = 1;
+    public static final int DRIVESAFE_3D_BIT_INDEX = 2;
+    public static final int DRIVESAFE_3DHD_BIT_INDEX = 3;
+    public static final int REDFLEX_HALO_BIT_INDEX = 4;
+    public static final int REDFLEX_NK7_BIT_INDEX = 5;
+    public static final int EKIN_BIT_INDEX = 6;
+    public static final int PHOTO_VERIFIER_BIT_INDEX = 7;
     /**
      * Ka Sensitivity Setting
      */
@@ -61,6 +73,35 @@ public class V19UserSettings extends UserSettings {
          */
         Advanced
     }
+    public enum KSensitivity{
+        /**
+         * Full K Sensitivity
+         */
+        Full,
+        /**
+         * Original Valentine One Gen2 K Sensitivity
+         */
+        Original,
+        /**
+         * Relaxed K Sensitivity
+         */
+        Relaxed
+    }
+    public enum XSensitivity{
+        /**
+         * Full X Sensitivity
+         */
+        Full,
+        /**
+         * Original Valentine One Gen2 X Sensitivity
+         */
+        Original,
+        /**
+         * Relaxed X Sensitivity
+         */
+        Relaxed
+    }
+
 
     /**
      * Constructs a new user V1.9 settings instance backed with the provided userBytes.
@@ -100,7 +141,7 @@ public class V19UserSettings extends UserSettings {
     }
 
     /**
-     * Indicates if the X & K Rear muting functionality is enabled.
+     * Indicates if the X &amp; K Rear muting functionality is enabled.
      *
      * @return True if enable
      */
@@ -110,9 +151,9 @@ public class V19UserSettings extends UserSettings {
     }
 
     /**
-     * Enables the K & K Rear muting functionality.
+     * Enables the K &amp; K Rear muting functionality.
      *
-     * @param enabled True to enable X & K Rear muting.
+     * @param enabled True to enable X &amp; K Rear muting.
      */
     public void setMuteXAndKRearEnabled(boolean enabled) {
         // Mute X and K rear is enabled when the 7th bit is cleared.
@@ -264,6 +305,10 @@ public class V19UserSettings extends UserSettings {
         setBit(USER_BYTE_1, FAST_LASER_DETECT_BIT_INDEX, enabled);
     }
 
+    /**
+     * Find Ka Sensitivity setting
+     * @return Ka Sensitivity setting
+     */
     public KaSensitivity getKaSensitivity() {
         byte bitVal = (byte)((mUserBytes[1] & 0xFF) >> 6);
         switch ( bitVal ){
@@ -274,6 +319,10 @@ public class V19UserSettings extends UserSettings {
         }
     }
 
+    /**
+     * Set the Ka Sensitivity
+     * @param kaSensitivity original, relaxed or full
+     */
     public void setKaSensitivity(KaSensitivity kaSensitivity) {
         switch ( kaSensitivity ){
             default:
@@ -290,6 +339,204 @@ public class V19UserSettings extends UserSettings {
                 setBit(USER_BYTE_1, KA_SENSITIVITY_B1, false);
                 break;
         }
+    }
+
+    /**
+     * Find K Sensitivity setting
+     * @return K Sensitivity setting
+     */
+    public KSensitivity getKSensitivity() {
+        byte bitVal = (byte)((mUserBytes[2] & 0x7F) >> 5);
+        switch ( bitVal ){
+            default:
+            case 3: return KSensitivity.Original;
+            case 1: return KSensitivity.Relaxed;
+            case 2: return KSensitivity.Full;
+        }
+    }
+
+    /**
+     * Set the K Sensitivity
+     * @param kSensitivity original, relaxed or full
+     */
+    public void setKSensitivity(KSensitivity kSensitivity) {
+        switch ( kSensitivity ){
+            default:
+            case Full: // Gen2 value = 2
+                setBit(USER_BYTE_2, K_SENSITIVITY_B0, false);
+                setBit(USER_BYTE_2, K_SENSITIVITY_B1, true);
+                break;
+            case Original:  // Gen2 value = 3
+                setBit(USER_BYTE_2, K_SENSITIVITY_B0, true);
+                setBit(USER_BYTE_2, K_SENSITIVITY_B1, true);
+                break;
+            case Relaxed: // Gen2 value = 1
+                setBit(USER_BYTE_2, K_SENSITIVITY_B0, true);
+                setBit(USER_BYTE_2, K_SENSITIVITY_B1, false);
+                break;
+        }
+    }
+
+    /**
+     * Indicates if the MRCT feature is enabled.
+     *
+     * @return True if enabled
+     */
+    public boolean isMRCTEnabled() {
+        return !isSet(USER_BYTE_2, MRCT_BIT_INDEX);
+    }
+
+    /**
+     * Enables the MRCT feature.
+     *
+     * @param enabled True to enable
+     */
+    public void setMRCTEnabled(boolean enabled) {
+        setBit(USER_BYTE_2, MRCT_BIT_INDEX, !enabled);
+    }
+
+    /**
+     * Find X Sensitivity setting
+     * @return X Sensitivity setting
+     */
+    public XSensitivity getXSensitivity() {
+        byte bitVal = (byte)(mUserBytes[3] & 0x03);
+        switch ( bitVal ){
+            default:
+            case 3: return XSensitivity.Original;
+            case 1: return XSensitivity.Relaxed;
+            case 2: return XSensitivity.Full;
+        }
+    }
+
+    /**
+     * Set the XSensitivity
+     * @param xSensitivity original, relaxed or full
+     */
+    public void setXSensitivity(XSensitivity xSensitivity) {
+        switch ( xSensitivity ){
+            default:
+            case Full: // Gen2 value = 2
+                setBit(USER_BYTE_3, X_SENSITIVITY_B0, false);
+                setBit(USER_BYTE_3, X_SENSITIVITY_B1, true);
+                break;
+            case Original:  // Gen2 value = 3
+                setBit(USER_BYTE_3, X_SENSITIVITY_B0, true);
+                setBit(USER_BYTE_3, X_SENSITIVITY_B1, true);
+                break;
+            case Relaxed: // Gen2 value = 1
+                setBit(USER_BYTE_3, X_SENSITIVITY_B0, true);
+                setBit(USER_BYTE_3, X_SENSITIVITY_B1, false);
+                break;
+        }
+    }
+
+    /**
+     * Indicates if the DriveSafe 3D feature is enabled.
+     *
+     * @return True if enabled
+     */
+    public boolean isDriveSafe3DEnabled() {
+        return !isSet(USER_BYTE_3, DRIVESAFE_3D_BIT_INDEX);
+    }
+
+    /**
+     * Enables the DriveSafe 3D feature.
+     *
+     * @param enabled True to enable
+     */
+    public void setDriveSafe3DEnabled(boolean enabled) {
+        setBit(USER_BYTE_3, DRIVESAFE_3D_BIT_INDEX, !enabled);
+    }
+
+    /**
+     * Indicates if the DriveSafe 3DHD feature is enabled.
+     *
+     * @return True if enabled
+     */
+    public boolean isDriveSafe3DHDEnabled() {
+        return !isSet(USER_BYTE_3, DRIVESAFE_3DHD_BIT_INDEX);
+    }
+
+    /**
+     * Enables the DriveSafe 3DHD feature.
+     *
+     * @param enabled True to enable
+     */
+    public void setDriveSafe3DHDEnabled(boolean enabled) {
+        setBit(USER_BYTE_3, DRIVESAFE_3DHD_BIT_INDEX, !enabled);
+    }
+
+    /**
+     * Indicates if the Redflex Halo feature is enabled.
+     *
+     * @return True if enabled
+     */
+    public boolean isRedflexHaloEnabled() {
+        return !isSet(USER_BYTE_3, REDFLEX_HALO_BIT_INDEX);
+    }
+
+    /**
+     * Enables the Redflex Halo feature.
+     *
+     * @param enabled True to enable
+     */
+    public void setRedflexHaloEnabled(boolean enabled) {
+        setBit(USER_BYTE_3, REDFLEX_HALO_BIT_INDEX, !enabled);
+    }
+
+    /**
+     * Indicates if the Redflex NK7 feature is enabled.
+     *
+     * @return True if enabled
+     */
+    public boolean isRedflexNK7Enabled() {
+        return !isSet(USER_BYTE_3, REDFLEX_NK7_BIT_INDEX);
+    }
+
+    /**
+     * Enables the Redflex NK7 feature.
+     *
+     * @param enabled True to enable
+     */
+    public void setRedflexNK7Enabled(boolean enabled) {
+        setBit(USER_BYTE_3, REDFLEX_NK7_BIT_INDEX, !enabled);
+    }
+
+    /**
+     * Indicates if the Ekin feature is enabled.
+     *
+     * @return True if enabled
+     */
+    public boolean isEkinEnabled() {
+        return !isSet(USER_BYTE_3, EKIN_BIT_INDEX);
+    }
+
+    /**
+     * Enables the Ekin feature.
+     *
+     * @param enabled True to enable
+     */
+    public void setEkinEnabled(boolean enabled) {
+        setBit(USER_BYTE_3, EKIN_BIT_INDEX, !enabled);
+    }
+
+    /**
+     * Indicates if the Photo Verifier feature is enabled.
+     *
+     * @return True if enabled
+     */
+    public boolean isPhotoVerifierEnabled() {
+        return !isSet(USER_BYTE_3, PHOTO_VERIFIER_BIT_INDEX);
+    }
+
+    /**
+     * Enables the Photo Verifier feature.
+     *
+     * @param enabled True to enable
+     */
+    public void setPhotoVerifierEnabled(boolean enabled) {
+        setBit(USER_BYTE_3, PHOTO_VERIFIER_BIT_INDEX, !enabled);
     }
 
     /**

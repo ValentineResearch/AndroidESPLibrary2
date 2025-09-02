@@ -11,11 +11,10 @@ import com.esplibrary.constants.V1Mode;
 
 /**
  * Created by JDavis on 3/13/2016.
- *
  * InfDisplayData packet represents the all of the necessary information needed to rebuild the Valentine One's
  * front display.
- * The data includes: the bogey counter 7 segment image 1 & image 2, the signal strength bar graph image, band
- * and arrow indicator image 1 & 2, as well as three aux bytes.
+ * The data includes: the bogey counter 7 segment image 1 amp; image 2, the signal strength bar graph image, band
+ * and arrow indicator image 1 amp; 2, as well as three aux bytes.
  */
 public class InfDisplayData extends ESPPacket {
     /*Constants for accessing the BOGEY COUNTER IMAGE 1 byte inside of the payload array.*/
@@ -57,29 +56,28 @@ public class InfDisplayData extends ESPPacket {
     /**
      * 'All Bogey Mode' if V1 in USA mode. 'U' mode or 'C' Mode if V1 in Euro Mode.
      *
-     * <ul> Usa Operation (Default):
-     *      <li>All Bogeys Mode
-     * </ul>
+     * <pre>
+     * Usa Operation (Default):
+     * - All Bogeys Mode
      *
-     * <ul> European Operation:
-     *      <li>'U' Mode - K and Ka(Photo)
-     *      <li>'C' Mode - K and Custom Sweeps
-     * </ul>
+     * European Operation:
+     * - 'U' Mode - K and Ka(Photo)
+     * - 'C' Mode - K and Custom Sweeps
+     * </pre>
+     *
      */
     public final static byte V1MODE_ALL_BOGEY_OR_K_AND_KA = 0x01;
     /**
-     *
      * 'Logic' Mode if V1 in USA mode. 'u' mode or 'c' Mode if V1 in Euro Mode.
      *
-     * <ul> Usa Operation (Default):
-     *      *      <li>Logic Mode
-     *      * </ul>
-     *      *
-     *      * <ul> European Operation:
-     *      *      <li>'u' Mode - K and Ka(Photo)
-     *      *      <li>'c' Mode - K and Custom Sweeps
-     *      * </ul>
+     * <pre>
+     * USA Operation (Default):
+     * - Logic Mode
      *
+     * European Operation:
+     * - 'u' Mode - K and Ka(Photo)
+     * - 'c' Mode - K and Custom Sweeps
+     * </pre>
      */
     public final static byte V1MODE_LOGIC_OR_KA = 0x02;
     /**
@@ -349,7 +347,7 @@ public class InfDisplayData extends ESPPacket {
         return ((packetData[BAND_ARROW_IND_IMAGE2_IDX] & 0x80) != 0);
     }
     /**
-     * Checks if the Soft mute bit inside of Aux byte 1 is set.
+     * Checks if the Soft mute bit inside of Aux byte 0 is set.
      *
      * @return  Returns true if the audio is muted, otherwise false is returned.
      */
@@ -358,7 +356,7 @@ public class InfDisplayData extends ESPPacket {
     }
 
     /**
-     * Checks if the Time-Slicing Holdoff bit inside of Aux byte 1 is set.
+     * Checks if the Time-Slicing Holdoff bit inside of Aux byte 0 is set.
      *
      * @return  Returns true if time slicing is not allowed, otherwise false is returned.
      */
@@ -367,7 +365,7 @@ public class InfDisplayData extends ESPPacket {
     }
 
     /**
-     * Checks if the System Status bit inside of Aux byte 1 is set.
+     * Checks if the System Status bit inside of Aux byte 0 is set.
      *
      * @return  Returns true if the V1 is actively searching for Alerts, otherwise false is returned.
      */
@@ -376,7 +374,7 @@ public class InfDisplayData extends ESPPacket {
     }
 
     /**
-     * Checks if the Display on bit inside of Aux byte 1 is set.
+     * Checks if the Display on bit inside of Aux byte 0 is set.
      *
      * @return  Returns true if the V1's display is turned on, otherwise false is returned.
      */
@@ -385,7 +383,7 @@ public class InfDisplayData extends ESPPacket {
     }
 
     /**
-     * Checks if the Euro bit inside of Aux byte 1 is set.
+     * Checks if the Euro bit inside of Aux byte 0 is set.
      *
      * @return  Returns true if the V1 is operating in Euro mode, otherwise false is returned.
      */
@@ -394,7 +392,7 @@ public class InfDisplayData extends ESPPacket {
     }
 
     /**
-     * Checks if the Custom Sweep bit inside of Aux byte 1 is set.
+     * Checks if the Custom Sweep bit inside of Aux byte 0 is set.
      *
      * @return  Returns true if the V1 has custom sweeps defined, otherwise false is returned.
      */
@@ -403,7 +401,7 @@ public class InfDisplayData extends ESPPacket {
     }
 
     /**
-     * Checks if the Legacy bit inside of Aux byte 1 is set.
+     * Checks if the Legacy bit inside of Aux byte 0 is set.
      *
      * @return  Returns true if the V1 is operating in Legacy Mode, otherwise false is returned.
      */
@@ -412,11 +410,11 @@ public class InfDisplayData extends ESPPacket {
     }
 
     /**
-     * Checks if the reserved bit inside of Aux byte 1 is set.
-     *
-     * @return  Returns true if the reserved bit is set, otherwise false is returned.
+     * Checks if the Display Active bit inside of Aux byte 0 is set.
+     * The result of this method is only meaningful on V1 versions V4.1037 and higher.
+     * @return  Returns true if the display active bit is set, otherwise false is returned.
      */
-    public boolean isReservedAuxSet() {
+    public boolean isDisplayActive() {
         return ((packetData[AUX_0_IDX] & 0x80) != 0);
     }
 
@@ -496,7 +494,7 @@ public class InfDisplayData extends ESPPacket {
     /**
      * Indicates if the Mute Indicator image 1 is set.
      *
-     * @apiNote The result of this method is only meaningful on V1 versions V4.1018 and higher.
+     * The result of this method is only meaningful on V1 versions V4.1018 and higher.
      *
      * @return True if set
      */
@@ -507,7 +505,7 @@ public class InfDisplayData extends ESPPacket {
     /**
      * Indicates if the Mute Indicator image 2 is set.
      *
-     * @apiNote The result of this method is only meaningful on V1 versions V4.1018 and higher.
+     * The result of this method is only meaningful on V1 versions V4.1018 and higher.
      *
      * @return true if set
      */
@@ -518,7 +516,7 @@ public class InfDisplayData extends ESPPacket {
     /**
      * Indicates if the Bluetooth Indicator image 1 bit is set.
      *
-     * @apiNote The result of this method is only meaningful on V1 versions V4.1018 and higher.
+     * The result of this method is only meaningful on V1 versions V4.1018 and higher.
      *
      * @return True if set
      */
@@ -529,7 +527,7 @@ public class InfDisplayData extends ESPPacket {
     /**
      * Indicates if the Bluetooth Indicator image 2 bit is set.
      *
-     * @apiNote The result of this method is only meaningful on V1 versions V4.1018 and higher.
+     * The result of this method is only meaningful on V1 versions V4.1018 and higher.
      *
      * @return True if set
      */

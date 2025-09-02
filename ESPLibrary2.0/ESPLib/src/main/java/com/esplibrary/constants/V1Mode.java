@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 public enum V1Mode {
     /**
-     * USA: All Bogeys / Euro: K & Ka
+     * USA: All Bogeys / Euro: K &amp; Ka
      */
     AllBogeysKKa(0x01, "All Bogeys/ K & Ka"),
     /**

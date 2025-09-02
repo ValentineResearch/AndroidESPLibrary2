@@ -25,9 +25,13 @@ public enum AlertBand {
      */
     Laser((byte)0x01, "Laser"),
     /**
+     * Photo band
+     */
+    Photo((byte)0xFE, "Photo"),
+    /**
      * Band undetermined. This should be treated as an error state.
      */
-    Invalid((byte) -1, "Invalid Band");
+    Invalid((byte)0xFF, "Invalid Band");
 
     private final byte value;
 
@@ -52,6 +56,15 @@ public enum AlertBand {
         return name;
     }
 
+    public static int index(String name) {
+        for (AlertBand band : AlertBand.values()) {
+            if (band.toString().equals(name)) {
+                return band.ordinal();
+            }
+        }
+        throw new IllegalArgumentException("Unknown band name: " + name);
+    }
+
     /**
      * Get a {@link AlertBand} enum for the specified byte value.
      * @param value Byte value that maps to the enum
@@ -71,6 +84,8 @@ public enum AlertBand {
                 return X;
             case 0x10:
                 return Ku;
+            case 0xFE:
+                return Photo;
             default:
                 return Invalid;
         }
@@ -95,6 +110,8 @@ public enum AlertBand {
                 return Ka;
             case 4:
                 return Laser;
+            case -2:
+                return Photo;
             default:
                 return Invalid;
         }

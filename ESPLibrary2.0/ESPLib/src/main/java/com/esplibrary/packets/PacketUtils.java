@@ -46,7 +46,7 @@ public class PacketUtils {
     public static final int SEVEN_SEG_VALUE_F = 0x71;
     /**Constant value that represents the Valentine One's Seven Segment displaying the character '#'**/
     public static final int SEVEN_SEG_VALUE_POUND = 0x49;
-    /**Constant value that represents the Valentine One's Seven Segment displaying the character '&'**/
+    /**Constant value that represents the Valentine One's Seven Segment displaying the character 'amp;'**/
     public static final int SEVEN_SEG_VALUE_AMP = 0x18;
     /**Constant value that represents the Valentine One's Seven Segment displaying the character 'L'**/
     public static final int SEVEN_SEG_VALUE_L = 0x38;

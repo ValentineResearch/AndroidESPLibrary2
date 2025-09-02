@@ -25,6 +25,42 @@ public class AlertData {
     protected static final int BAND_ARROW_DEF_IDX = 5;
     protected static final int AUX_BYTE_IDX = 6;
 
+    /**
+     * Photo Radar Types and Display Names
+     */
+    public enum ESPPhotoRadarType {
+        prtNotPhoto(0, ""),
+        prtMRCT(1, "MRCT"),
+        prtDriveSafe3D(2, "DriveSafe 3D"),
+        prtDriveSafe3DHD(3, "DriveSafe 3DHD"),
+        prtRedflexHalo(4, "Redflex Halo"),
+        prtRdflexNK7(5, "Redflex NK7"),
+        prtEkin(6, "Ekin");
+
+        private final int value;
+        private final String displayName;
+
+        ESPPhotoRadarType(int value, String displayName) {
+            this.value = value;
+            this.displayName = displayName;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public static ESPPhotoRadarType fromInt(int i) {
+            for (ESPPhotoRadarType type : values()) {
+                if (type.value == i) return type;
+            }
+            return prtNotPhoto;
+        }
+    }
+
     private byte [] mData;
 
     /**
@@ -145,14 +181,18 @@ public class AlertData {
      * @return The bargraph strength in direction
      */
     public int getBargraphStrength(Direction direction) {
+        AlertBand band = getBand();
+        if (band == AlertBand.Photo){
+            band = AlertBand.K;
+        }
         switch (direction) {
             case Front:
-                return getBargraphStrength(getBand(), getFrontSignalStrength());
+                return getBargraphStrength(band, getFrontSignalStrength());
             case Side:
                 int maxStrength = Math.max(getFrontSignalStrength(), getRearSignalStrength());
-                return getBargraphStrength(getBand(), maxStrength);
+                return getBargraphStrength(band, maxStrength);
             case Rear:
-                return getBargraphStrength(getBand(), getRearSignalStrength());
+                return getBargraphStrength(band, getRearSignalStrength());
             default:
                 return 0;
         }
@@ -231,6 +271,7 @@ public class AlertData {
                 break;
             case K:
             case Ku:
+            case Photo:
                 if(strength >= 0xC2) {
                     return 8;
                 }
@@ -266,8 +307,21 @@ public class AlertData {
      * @return Alert's {@link AlertBand band}
      */
     public AlertBand getBand() {
-        byte band = mData[BAND_ARROW_DEF_IDX];
-        return AlertBand.get(band & 0x1F);
+        byte band = mData[AUX_BYTE_IDX];
+        AlertBand bandName = AlertBand.Invalid;
+        if ((band & 0x0F) != 0){
+            bandName = AlertBand.Photo;
+            return bandName;
+        }
+        else{
+            band = mData[BAND_ARROW_DEF_IDX];
+            bandName =  AlertBand.get(band & 0x1F);
+            if ((band & 0x1F) != 0) {
+                bandName =  AlertBand.get(band & 0x1F);
+                return bandName;
+            }
+        }
+        return bandName;
     }
 
     /**
@@ -324,6 +378,26 @@ public class AlertData {
         byte dir = mData[BAND_ARROW_DEF_IDX];
         return Direction.get((dir & 0xE0));
     }
+
+    /**
+     * Find the Photo Radar Type
+     *
+     * @return Photo Radar Type
+     */
+    public ESPPhotoRadarType getPhotoType() {
+        byte photoBits = (byte) (mData[AUX_BYTE_IDX] & 0x0F);
+        return ESPPhotoRadarType.fromInt(photoBits);
+    }
+
+    /**
+     * Photo Radar Name
+     *
+     * @return Photo Radar name string
+     */
+    public String getPhotoName(ESPPhotoRadarType photoRadarType) {
+        return photoRadarType.getDisplayName();
+    }
+
 
     /**
      * Indicates if the alert is priority.

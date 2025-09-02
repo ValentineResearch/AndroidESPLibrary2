@@ -28,7 +28,6 @@ import com.esplibrary.data.UserSettings;
 import com.esplibrary.packets.ESPPacket;
 import com.esplibrary.packets.InfDisplayData;
 import com.esplibrary.packets.PacketFactory;
-import com.esplibrary.packets.response.ResponseCurrentVolume;
 
 import java.util.List;
 
@@ -297,7 +296,7 @@ public interface IESPClient {
      * Returns the last cached RSSI value for the currently connected BLE device.
      *
      * @return RSSI of the currently connected device.
-     * @apiNote This value is only meaningful for BLE connections such as with
+     * This value is only meaningful for BLE connections such as with
      * V1connection LE/V1c LE/V1 Gen2.
      */
     int getConnectedDeviceRSSI();
@@ -461,16 +460,14 @@ public interface IESPClient {
      * @param sweeps    List of {@link SweepDefinition custom sweeps} the V1 should use.
      * @param callback  The {@link ESPRequestedDataListener callback} that will be invoked when
      *                  all sweeps have been written or if an error occurs.
-     *                  <ul>Callback accepts an integer as it's first param. This integer value is
-     *                      the sweep write result.
-     *                      <li>{@code 0 ==} Sweep Write Successful.</li>
-     *                      <li>
-     *                          Any Other Value equals the number of the first sweep with
-     *                          invalid parameters. (The error number returned will be the sweep
-     *                          index + 1, where sweep index is the index from the
-     *                          {@link #requestWriteSweepDefinitions(List, ESPRequestedDataListener)}).
-     *                      </li>
-     *                  </ul>
+     *                  Callback accepts an integer as its first parameter. This integer value is
+     *                  the sweep write result:
+     *<pre>
+     *                  - {@code 0} = Sweep Write Successful.
+     *                  - Any other value indicates the number of the first sweep with invalid parameters.
+     *                  (The error number returned will be the sweep index + 1, where sweep index is the index from
+     *                  {@link #requestWriteSweepDefinitions(List, ESPRequestedDataListener)}).
+     *</pre>
      */
     void requestWriteSweepDefinitions(List<SweepDefinition> sweeps, ESPRequestedDataListener<Integer> callback);
 
@@ -610,6 +607,7 @@ public interface IESPClient {
      */
     void requestCurrentVolume(ESPRequestedDataListener<byte[]> callback);
 
+    void requestAllVolume(ESPRequestedDataListener<byte[]> callback);
     /**
      * Request to change the Valentine One's current volume settings.
      *

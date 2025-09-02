@@ -273,34 +273,38 @@ public class V1connectionDemoWrapper extends V1connectionBaseWrapper {
                 int step = 0;
                 do {
                     int endOfLineLoc = mDemoData.indexOf("\n", step);
+                    if (endOfLineLoc == -1) {
+                        endOfLineLoc = mDemoData.length();
+                    }
+
                     // Get the whole line of byte data and store it into a string.
                     String currentLine = mDemoData.substring(step, endOfLineLoc);
                     // Offset the step variable by location of the first new line character.
                     step = endOfLineLoc + 1;
 
-                    String specialTest =  currentLine.substring(0, 2);
-                    if(specialTest.equals(DEMO_FILE_DOUBLE_COMMENT_CHARACTER)) {
-                        /*INTENTIONALLY LEFT BLANK*/
-                    }
-                    else if(specialTest.charAt(0) == DEMO_FILE_BEGIN_COMMENT_CHARACTER) {
-                        int startLoc = currentLine.indexOf(DEMO_FILE_SEMI_COLON_CHARACTER);
-                        int endLoc = currentLine.indexOf(DEMO_FILE_END_COMMENT_CHARACTER);
-                        // Send the embedded message demo data, to the helper thread to be delivered to any registered
-                        // notification callbacks.
-                        handleNoticationMessage(currentLine.substring(startLoc + 1, endLoc));
-                    }
-                    else {
-                        byte[] bytes = convertStringToByteArray(currentLine);
-                        mBuffer.addAll(bytes);
-                        ESPPacket newPacket = PacketUtils.makeFromBufferSPP(mFactory, mBuffer, DeviceId.VALENTINE_ONE);
-                        if (newPacket != null) {
-                            processDemoData(newPacket);
+                    if (!(currentLine.trim().isEmpty() || (currentLine.length() < 2))) {
+                        String specialTest = currentLine.substring(0, 2);
+                        if (specialTest.equals(DEMO_FILE_DOUBLE_COMMENT_CHARACTER)) {
+                            /*INTENTIONALLY LEFT BLANK*/
+                        } else if (specialTest.charAt(0) == DEMO_FILE_BEGIN_COMMENT_CHARACTER) {
+                            int startLoc = currentLine.indexOf(DEMO_FILE_SEMI_COLON_CHARACTER);
+                            int endLoc = currentLine.indexOf(DEMO_FILE_END_COMMENT_CHARACTER);
+                            // Send the embedded message demo data, to the helper thread to be delivered to any registered
+                            // notification callbacks.
+                            handleNoticationMessage(currentLine.substring(startLoc + 1, endLoc));
+                        } else {
+                            byte[] bytes = convertStringToByteArray(currentLine);
+                            mBuffer.addAll(bytes);
+                            ESPPacket newPacket = PacketUtils.makeFromBufferSPP(mFactory, mBuffer, DeviceId.VALENTINE_ONE);
+                            if (newPacket != null) {
+                                processDemoData(newPacket);
+                            }
+                            // To emulate data coming in from the bluetooth stack sleep for 68 milliseconds
+                            Thread.sleep(68);
                         }
-                        // To emulate data coming in from the bluetooth stack sleep for 68 milliseconds
-                        Thread.sleep(68);
                     }
                     // If we have reached the end of the demo data ArrayList, loop back to the front.
-                    if(step == mDemoData.length()) {
+                    if(step >= mDemoData.length()) {
                         // Repeating is enabled so set step back to zero to begin re-reading the demo data.
                         if (mRepeat) {
                             step = 0;

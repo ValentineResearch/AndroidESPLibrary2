@@ -35,7 +35,7 @@ public class ResponseUserBytes extends ESPPacket {
      * Returns {@link UserSettings} based on the contained user bytes data and the specified V1
      * version.
      *
-     * @apiNote This function should not be used for the Tech Display
+     * This function should not be used for the Tech Display
      *
      * @param v1Version V1 version; This influences how userbytes are interpreted.
      *

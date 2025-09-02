@@ -220,7 +220,7 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDevice
 
         /**
          * Returns the subtitle of the item.
-         * @apiNote {@link #isSectionHeader Section headers} don't support subtitles and null is
+         * {@link #isSectionHeader Section headers} don't support subtitles and null is
          * always returned.
          *
          * @return subtitle
@@ -234,7 +234,7 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDevice
 
         /**
          * Return the item was last updated.
-         * @apiNote {@link #isSectionHeader Section headers} don't support last update time-keeping
+         * {@link #isSectionHeader Section headers} don't support last update time-keeping
          * so {@link Long#MIN_VALUE} is always returned if {@code this.isSectionHeader == true}.
          *
          * @return Time since item was last updated

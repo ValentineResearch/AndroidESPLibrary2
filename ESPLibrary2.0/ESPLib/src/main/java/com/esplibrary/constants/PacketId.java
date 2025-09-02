@@ -46,6 +46,8 @@ public class PacketId {
             REQWRITEVOLUME,
             REQABORTAUDIODELAY,
             REQDISPLAYCURRENTVOLUME,
+            REQALLVOLUME,
+            RESPALLVOLUME,
             REQSTARTALERTDATA,
             REQSTOPALERTDATA,
             RESPALERTDATA,
@@ -132,6 +134,10 @@ public class PacketId {
     public static final int REQABORTAUDIODELAY          = 0x3A;
     /**Packet Identifier for displaying the current volume**/
     public static final int REQDISPLAYCURRENTVOLUME     = 0x3B;
+    /**Packet Identifier to request all volume bytes**/
+    public static final int REQALLVOLUME                = 0x3C;
+    /**Packet Identifier to for all volume bytes response**/
+    public static final int RESPALLVOLUME               = 0x3D;
     /**Packet Identifier for Start Alert Data Request**/
     public static final int REQSTARTALERTDATA 			= 0x41;
     /**Packet Identifier for Stop Alert Data Request*/
@@ -221,6 +227,8 @@ public class PacketId {
             case REQWRITEVOLUME: return "REQWRITEVOLUME";
             case REQABORTAUDIODELAY: return "REQABORTAUDIODELAY";
             case REQDISPLAYCURRENTVOLUME: return "REQDISPLAYCURRENTVOLUME";
+            case REQALLVOLUME: return "REQALLVOLUME";
+            case RESPALLVOLUME: return "RESPALLVOLUME";
             case REQSTARTALERTDATA: return "REQSTARTALERTDATA";
             case REQSTOPALERTDATA: return "REQSTOPALERTDATA";
             case RESPALERTDATA: return "RESPALERTDATA";

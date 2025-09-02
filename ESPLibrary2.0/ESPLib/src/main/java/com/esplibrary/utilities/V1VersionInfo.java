@@ -5,12 +5,13 @@
  */
 package com.esplibrary.utilities;
 
+
+import com.esplibrary.data.AlertBand;
 import com.esplibrary.data.SweepSection;
+import com.esplibrary.packets.response.ResponseDefaultSweepDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.esplibrary.data.AlertBand;
-import com.esplibrary.packets.response.ResponseDefaultSweepDefinition;
 
 /**
  * Created by JDavis on 3/14/2016.
@@ -46,6 +47,14 @@ public final class V1VersionInfo {
     private final static double ALLOW_BSM_PLUS_ON_START_VERSION = 4.1035;
     // V1 Gen2 version that first supported turning on the Auto Mute feature
     private final static double ALLOW_AUTO_MUTE_START_VERSION = 4.1036;
+    // V1 Gen2 version that first supported adjusting the K sensitivity
+    private final static double K_SENSITIVITY_ADJUST_START_VERSION = 4.1037d;
+    // V1 Gen2 version that first supported adjusting the X sensitivity
+    private final static double X_SENSITIVITY_ADJUST_START_VERSION = 4.1037d;
+    // V1 Gen2 version that first supported mrct
+    private final static double PHOTO_RADAR_START_VERSION = 4.1037d;
+    // V1 Gen2 version that first supported the displayActive bit
+    public final static double DISPLAY_ACTIVE_START_VERSION = 4.1037d;
 
     // The ability to read the default sweeps form the V1 was added in version V3.8950.
     private final static double READ_SWEEP_DEFAULTS_START_VER = 3.8950d;
@@ -300,6 +309,28 @@ public final class V1VersionInfo {
     }
 
     /**
+     * Indicates if the specified V1 version supports adjusting the K sensitivity.
+     *
+     * @param version V1 version
+     *
+     * @return True if feature is available
+     */
+    public static boolean isKSensitivityAdjustAvailable (double version) {
+        return (version >= K_SENSITIVITY_ADJUST_START_VERSION);
+    }
+
+    /**
+     * Indicates if the specified V1 version supports adjusting the X sensitivity.
+     *
+     * @param version V1 version
+     *
+     * @return True if feature is available
+     */
+    public static boolean isXSensitivityAdjustAvailable (double version) {
+        return (version >= X_SENSITIVITY_ADJUST_START_VERSION);
+    }
+
+    /**
      * Indicates if the specified V1 version supports turning off the startup sequence.
      *
      * @param version V1 version
@@ -308,6 +339,26 @@ public final class V1VersionInfo {
      */
     public static boolean isDisableStartupSequenceAvailable(double version) {
         return (version >= ALLOW_START_SEQUENCE_OFF_START_VERSION);
+    }
+
+    /**
+     * Indicates if the specified V1 version supports turning off the mrct.
+     *
+     * @param version V1 version
+     *
+     * @return True if feature is available
+     */
+    public static boolean isPhotoRadarAvailable(double version) {
+        return (version >= PHOTO_RADAR_START_VERSION);
+    }
+
+    /**
+     * Indicates if the specified V1 version supports the Display Active bit.
+     * @param version
+     * @return
+     */
+    public static boolean isDisplayActiveAvailable(double version) {
+        return (version >= DISPLAY_ACTIVE_START_VERSION);
     }
 
     /**
