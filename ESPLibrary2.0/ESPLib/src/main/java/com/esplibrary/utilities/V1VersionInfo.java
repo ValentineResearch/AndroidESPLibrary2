@@ -22,6 +22,11 @@ public final class V1VersionInfo {
      */
     public final static double V1_GEN_2_PLATFORM_BASELINE_VERSION = 4.1000d;
     /**
+     * Default version of the V1
+     */
+    public final static double DEFAULT_V1_VERSION = 4.1037d;
+
+    /**
      * Max version of the V1 Gen2 platform
      */
     public final static double V1_GEN_2_PLATFORM_MAX_VERSION = 4.9999d;
@@ -51,7 +56,7 @@ public final class V1VersionInfo {
     private final static double K_SENSITIVITY_ADJUST_START_VERSION = 4.1037d;
     // V1 Gen2 version that first supported adjusting the X sensitivity
     private final static double X_SENSITIVITY_ADJUST_START_VERSION = 4.1037d;
-    // V1 Gen2 version that first supported mrct
+    // V1 Gen2 version that first supported photo radar
     private final static double PHOTO_RADAR_START_VERSION = 4.1037d;
     // V1 Gen2 version that first supported the displayActive bit
     public final static double DISPLAY_ACTIVE_START_VERSION = 4.1037d;
@@ -64,6 +69,8 @@ public final class V1VersionInfo {
     public static final double SINGLE_SWEEP_SECTION_VERSION = 3.8952d;
 
     private static V1VersionInfo mVersionInfo;
+
+    private static double mConnectedV1Version = 0.0d;
 
     /**
      * Return's the global instance of the V1 version utility.
@@ -78,6 +85,23 @@ public final class V1VersionInfo {
     }
 
     private V1VersionInfo() {}
+
+    /**
+     * Gets the last known connected V1 version.
+     *
+     * @return The last version reported by the V1
+     */
+    public static double getConnectedV1Version () {
+        return mConnectedV1Version;
+    }
+
+    /**
+     * Sets the last known connected V1 version.
+     *
+     */
+    public static void setConnectedV1Version (double version) {
+        mConnectedV1Version = version;
+    }
 
     /**
      * Returns the {@link SweepSection sweep sections} that best match the specified V1 version.
@@ -342,7 +366,7 @@ public final class V1VersionInfo {
     }
 
     /**
-     * Indicates if the specified V1 version supports turning off the mrct.
+     * Indicates if the specified V1 version supports photo radar.
      *
      * @param version V1 version
      *
@@ -350,6 +374,15 @@ public final class V1VersionInfo {
      */
     public static boolean isPhotoRadarAvailable(double version) {
         return (version >= PHOTO_RADAR_START_VERSION);
+    }
+
+    /**
+     * Indicates if the last known connected V1 version supports photo radar.
+     *
+     * @return True if feature is available
+     */
+    public static boolean isPhotoRadarAvailable() {
+        return (mConnectedV1Version >= PHOTO_RADAR_START_VERSION);
     }
 
     /**

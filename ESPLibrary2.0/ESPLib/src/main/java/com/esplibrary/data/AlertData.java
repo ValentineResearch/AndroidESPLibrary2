@@ -5,6 +5,8 @@
  */
 package com.esplibrary.data;
 
+import com.esplibrary.utilities.V1VersionInfo;
+
 import java.util.Arrays;
 
 /**
@@ -307,20 +309,17 @@ public class AlertData {
      * @return Alert's {@link AlertBand band}
      */
     public AlertBand getBand() {
-        byte band = mData[AUX_BYTE_IDX];
         AlertBand bandName = AlertBand.Invalid;
-        if ((band & 0x0F) != 0){
+        byte band = mData[BAND_ARROW_DEF_IDX];
+        bandName =  AlertBand.get(band & 0x1F);
+        if ((band & 0x1F) != 0) {
+            bandName = AlertBand.get(band & 0x1F);
+        }
+
+        if ( (bandName == AlertBand.K) && (getPhotoType () != ESPPhotoRadarType.prtNotPhoto) ) {
             bandName = AlertBand.Photo;
-            return bandName;
         }
-        else{
-            band = mData[BAND_ARROW_DEF_IDX];
-            bandName =  AlertBand.get(band & 0x1F);
-            if ((band & 0x1F) != 0) {
-                bandName =  AlertBand.get(band & 0x1F);
-                return bandName;
-            }
-        }
+
         return bandName;
     }
 
@@ -385,8 +384,11 @@ public class AlertData {
      * @return Photo Radar Type
      */
     public ESPPhotoRadarType getPhotoType() {
-        byte photoBits = (byte) (mData[AUX_BYTE_IDX] & 0x0F);
-        return ESPPhotoRadarType.fromInt(photoBits);
+        if ( V1VersionInfo.isPhotoRadarAvailable() ) {
+            byte photoBits = (byte) (mData[AUX_BYTE_IDX] & 0x0F);
+            return ESPPhotoRadarType.fromInt(photoBits);
+        }
+        return ESPPhotoRadarType.prtNotPhoto;
     }
 
     /**

@@ -93,6 +93,9 @@ public class ESPValentineClient implements IESPClient {
     public ESPValentineClient(Context appContext, IV1connectionWrapper connection) {
         mConnection = connection;
         mAppCtx = appContext.getApplicationContext();
+
+        // Initialize to the default V1 Gen2 version
+        V1VersionInfo.setConnectedV1Version(V1VersionInfo.DEFAULT_V1_VERSION);
     }
 
     /**
@@ -260,6 +263,10 @@ public class ESPValentineClient implements IESPClient {
             ESPLogger.e(LOG_TAG, "Invalid connection type; Expected connection type = " + mConnection.getConnectionType());
             return false;
         }
+
+        // Turn on the base V1 Gen2 feature set until we know what version is connected
+        V1VersionInfo.setConnectedV1Version(V1VersionInfo.V1_GEN_2_PLATFORM_BASELINE_VERSION);
+
         // Register the conn. event listener
         mConnection.addConnectionListener(listener);
         mConnection.connect(mAppCtx, v1Device);
@@ -272,6 +279,10 @@ public class ESPValentineClient implements IESPClient {
             ESPLogger.e(LOG_TAG, "ESPClient's connection type isn't suitable for demo mode");
             return false;
         }
+
+        // Turn on the full feature set for Demo Mode
+        V1VersionInfo.setConnectedV1Version(V1VersionInfo.DEFAULT_V1_VERSION);
+
         // Register the conn. event listener
         mConnection.addConnectionListener(listener);
         mConnection.setDemoData(demoESPData);
@@ -368,6 +379,7 @@ public class ESPValentineClient implements IESPClient {
         if (version.length() == 7 && version.codePointAt(0) == 'V') {
             // This is a V1 version, so store it for later use
             mLastV1Version = ResponseVersion.getVersionDouble (version);
+            V1VersionInfo.setConnectedV1Version (mLastV1Version);
         }
     }
 

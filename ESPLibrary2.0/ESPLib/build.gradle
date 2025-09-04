@@ -7,8 +7,8 @@ android {
         minSdkVersion 29
         targetSdkVersion 35
         compileSdk 35
-        versionCode 6
-        versionName "2.0.7"
+        versionCode 7
+        versionName "2.0.8"
 
         buildConfigField("boolean", "ENABLE_LOGGING", "false")
         buildConfigField("boolean", "INFO_LOGGING", "false")

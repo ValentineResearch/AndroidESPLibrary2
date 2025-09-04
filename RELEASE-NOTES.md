@@ -45,3 +45,6 @@
 * Added the display active flag to the infDisplayData packet to indicate when the V1 display is active, or not "resting" **(Only supported on versions V4.1037 and above)**
 * Added support for the resting display feature on the Tech Display **(Only supported on versions T1.0001 and above)**
 * Added support for the extended frequency timeout feature on the Tech Display **(Only supported on versions T1.0001 and above)**
+
+# **ESP Library2 v2.0.8 - September, 2025**
+* Fixed an issue causing alerts on V1 Gen1 versions to be reported as photo**
