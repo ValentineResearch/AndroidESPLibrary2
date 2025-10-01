@@ -105,6 +105,18 @@ public class AlertData {
     }
 
     /**
+     * Returns the array containing this instances byte data.
+     *
+     * @return Array containing user settings.
+     */
+    public byte [] getBytes() {
+        byte [] copy = new byte[mData.length];
+        // Make a copy of the byte array so no one holds a references to our data.
+        System.arraycopy(mData, 0, copy, 0, copy.length);
+        return copy;
+    }
+
+    /**
      * Index in the alarm table this alert belongs to
      *
      * @return Index of this alert in the corresponding alarm table

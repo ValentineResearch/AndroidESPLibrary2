@@ -772,6 +772,9 @@ public class InfDisplayData extends ESPPacket {
             case PacketUtils.SEVEN_SEG_VALUE_u:
                 retVal = "u";
                 break;
+            case PacketUtils.SEVEN_SEG_VALUE_P:
+                retVal = "P";
+                break;
             default :
                 // If none of the other cases, default to a whitespace string.
                 retVal = " ";

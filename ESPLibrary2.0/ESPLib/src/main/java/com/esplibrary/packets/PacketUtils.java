@@ -58,6 +58,8 @@ public class PacketUtils {
     public static final int SEVEN_SEG_VALUE_U = 0x3E;
     /**Constant value that represents the Valentine One's Seven Segment displaying the character 'u'**/
     public static final int SEVEN_SEG_VALUE_u = 0x1C;
+    /**Constant value that represents the Valentine One's Seven Segment displaying the character 'P'**/
+    public static final int SEVEN_SEG_VALUE_P = 0x73;
 
     public final static byte ESP_PACKET_SOF = (byte) 0xAA;
     public final static byte ESP_PACKET_EOF = (byte) 0xAB;
